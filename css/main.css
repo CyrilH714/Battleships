@@ -6,8 +6,8 @@
 height: 100vh;
 margin: 0;
 font-family: "Open Sans", sans-serif;
-display:flex;
-flex-direction:column;
+display:grid;
+
 justify-content:center;
 align-items: center;
 background-color: palegoldenrod;
@@ -18,6 +18,12 @@ background-color: palegoldenrod;
     color:darkgoldenrod;
     font-weight: bolder;
     font-family:"Black Ops One", sans-serif;
+    margin-top: -27vmin;
+    text-shadow: 
+    -2px -2px 0 #333,  
+    2px -2px 0 #333,
+    -2px 2px 0 #333,
+    2px 2px 0 #333;
   }
 
   h1 {
@@ -85,6 +91,7 @@ section > div[id*="c"] {
 
   button {
     margin-top: 4vmin;
+    margin: 0 42vmin;
     padding: 2vmin;
     font-size:2vmin;
     border-radius: 4vmin;
@@ -101,7 +108,10 @@ section > div[id*="c"] {
   }
 
   section[id*="fossils"] {
-/* set size and location of my and enemy fossil images.
+    display: flex;
+    flex-direction: row;
+    height: 1vh;
+/* set size and location of my and rival fossil images.
 Appearance change when hovering over image. */
   }
 
@@ -111,4 +121,13 @@ Appearance change when hovering over image. */
     border-top-color: hex(#5C4033)
 /* Use JS to link hovering over board div to highlighted row/column marker */
 
+  }
+
+  body[id*="my"]{
+    display:grid;
+    justify-content: left;
+  }
+  body[id*="rival"]{
+    display:grid;
+    justify-content: right;
   }
