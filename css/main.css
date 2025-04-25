@@ -1,0 +1,53 @@
+* {
+    box-sizing: border-box;
+  }
+
+  body {
+
+  }
+
+  header{
+    
+  }
+
+  #markers {
+
+  }
+
+  #markers > div {
+
+  }
+
+  #markers >div:hover{
+
+
+  }
+
+  #board >div:hover{
+
+
+  }
+
+  div[id*="row"] {
+
+  }
+
+  div[id*="col"] {
+
+  }
+
+  #board {
+
+  }
+
+  #board > div {
+
+  }
+
+  button {
+
+  }
+
+  button:hover {
+
+  }
