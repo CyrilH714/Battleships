@@ -9,43 +9,76 @@ padding: 0;
 font-family: "Open Sans", sans-serif;
 display:grid;
 grid-template-columns: auto 1fr auto 1fr ;
-grid-template-rows: auto auto auto auto auto auto auto auto auto; 
+grid-template-rows: auto auto auto auto auto auto; 
 grid-template-areas:
 "header header header header"
 "h1 h1 h1 h1"
 "h2me h2me h2rival h2rival"
 "h3me h3me h3rival h3rival"
-"myRowMarkers myRowMarkers rivalRowMarkers rivalRowMarkers"
-"myColMarkers myBoard rivalColMarkers rivalBoard"
-"myFossils myFossils rivalFossils rivalFossils"
-"button1 button1 button1 button1"
+"myFossils myBoard rivalFossils rivalBoard"
 "button2 button2 button2 button2";
 justify-content:center;
 align-items: center;
 background-color: palegoldenrod;
   }
 
-  #my-row-markers {
-    grid-area: myRowMarkers;
+
+  .empty {
+    width:4vmin;
+    height: 4vmin;
+    /* margin: auto; */
+    /* background-color: blue; */
   }
-  #my-column-markers {
-    grid-area:myColMarkers;
-    display:grid;
-    grid-template-columns:4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin ;
-    grid-template-rows:4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin ;  
-    gap: 1vmin;
-    }
-  
-  #rival-row-markers {
-    grid-area:rivalRowMarkers;
+ 
+  .marker {
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    font-size:4vmin;
+    font-weight: bold;
+    align-items: center;
+    justify-content: center;
+    transform: scale(0.5);
+        /* background-color: red; */
+       
   }
-  #rival-column-markers {
-    grid-area: rivalColMarkers;
-    display:grid;
-    grid-template-columns:4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin ;
-    grid-template-rows:4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin ;  
-    gap: 1vmin;
-    }
+  .horizontal-arrow {
+    border-top: 4vmin solid transparent;
+    border-bottom: 4vmin solid transparent;
+    border-left: 4vmin solid brown;
+    width:0;
+    height:0;
+    transform: scale(0.9);
+  }
+
+ .letter {
+    width: 4vmin;
+    margin-right: 1vmin;
+    font-family: "Space Mono";
+ }
+
+  .vertical-marker {
+    display:flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    font-size:4vmin;
+    font-weight: bold;
+    justify-content: center;
+    align-items: center;
+transform: scale(0.5);
+margin-top: -1vmin;
+
+    .vertical-arrow {
+            border-left: 4vmin solid transparent;
+            border-right: 4vmin solid transparent;
+            border-top: 4vmin solid brown;
+            width:0;
+            height:0;
+            transform: scale(0.9)
+        }
+        
+  }
+
   header{
     font-size:10vmin;
     color:darkgoldenrod;
@@ -74,86 +107,30 @@ background-color: palegoldenrod;
     margin: auto;
   }
 
-  section[id*="column-markers"] {
-    display:grid;
-    height:4vmin;
-    width: 4vmin;
-    grid-template-columns: repeat(10, 4vmin);
-    gap: 1vmin;
-    margin-top: 0vmin;
-    justify-items: center;
-    align-items: center;
-    background-color: rebeccapurple;
-  }
 
-  section[id*="row-markers"] {
-    display:grid;
-    height:4vmin;
-    width:4vmin;
-    grid-template-rows: repeat(10, 4vmin);
-    gap: 1vmin;
-    margin-top: 0vmin;
-    margin-left: 0vmin;
-    justify-items: center;
-    align-items: center;
-    background-color: rebeccapurple;
-
-
-  }
-
-  section[id*="row-markers"] > div {
-    height:4vmin;
-    width:4vmin;
-    border-width:5vmin;
-    border-style:solid;
-    border-color: transparent transparent transparent brown;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transform: scale(0.4);
-    margin-top:1.5vmin;
-    gap:1vmin;
-    background-color: aqua;
-    
-
-  }
-
-  section[id*="column-markers"] > div {
-    width:4vmin;
-    border-width:5vmin;
-    border-style:solid;
-    border-color: brown transparent transparent;
-    transform: scale(0.4);
-    background-color: aqua;
-    
-  }
-
-section > div[id*="r"] {
-/* Say row letter to left of arrow marker */
-  }
-
-section > div[id*="c"] {
-/* Say column number above arrow marker */
-  }
-
-section[id*="board"] {
-    display: grid;
-    grid-template-columns:4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin ;
-     grid-template-rows:4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin ;  
-     gap: 1vmin;
-
-  }
-#my-board {
+#my-board-wrap {
     grid-area:myBoard;
     margin: auto;
+    display: grid;
+    grid-template-columns: 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin;
+grid-template-rows: 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin;
+justify-content:center;
+align-items: center;
 }
-#rival-board {
+#rival-board-wrap {
     grid-area:rivalBoard;
     margin: auto;
+    display: grid;
+    grid-template-columns: 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin;
+grid-template-rows: 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin 4vmin;
+justify-content:center;
+align-items: center;
 }
-  section[id*="board"] > div {
-    border-radius: 50%;
+.cell {
+    border-radius: 10%;
     border: 0.1vmin solid grey;
+    width:4vmin;
+    height:4vmin;
 
   }
 
@@ -168,6 +145,7 @@ section[id*="board"] {
  #my-message {
     grid-area:h3me;
     margin: auto;
+    margin-bottom: 1vmin;
  }
  #rival-message {
     grid-area:h3rival;
@@ -182,6 +160,7 @@ section[id*="board"] {
         1px 1px 0 #333;
         margin: auto;
         margin-top: 4vmin;
+        text-align: right;
   }
 
   #my-site {
@@ -222,37 +201,35 @@ section[id*="board"] {
     background-color: orange;
   }
 
-  section[id*="fossils"] {
-    /* display: flex; */
-    /* flex-direction: row; */
-    min-height: 20vh;
-    /* grid-area: fossils; */
-/* set size and location of my and rival fossil images.
-Appearance change when hovering over image. */
-  }
 
-  #my-fossils{
+
+  div[id*="-fossil-"]{
     grid-area:myFossils;
     justify-content: space-between;
-    display: inline;
-    
-  }
-  #rival-fossils{
-    grid-area:rivalFossils;
-    justify-content: space-between;
-    
+    display: flex;
+    flex-direction: column;
+    margin-left: 3vmin;
+    margin-right:1vmin;
+    align-items: center;
+   
+
   }
 
   .highlight {
     transform: scale(0.9);
     transition: transform 150ms ease-out;
     border-top-color: hex(#5C4033)
-/* Use JS to link hovering over board div to highlighted row/column marker */
+/* TODO: Use JS to link hovering over board div to highlighted row/column marker */
 
   }
   img {
-    height:1vh;
-    width: 1vw;
+    height:10vmin;
+    width: 10vmin;
+    margin-bottom: 0vmin;
+    justify-content: right;
+    display: flex;
+    align-items: right;
+    /* background-color: red; */
    
   }
 
