@@ -17,6 +17,19 @@ const COLOURS ={
     "0": "black",
 }
 
+const NAME ={
+    "1": "Your turn",
+    "-1": "Rival's turn",
+    "null": "Hide your fossils",
+}
+
+const INSTRUCT ={
+   "null": "Hide your fossils here!",
+    "1": "Choose a spot to dig!",
+    "-1":"Your rival is digging!",
+    
+}
+
 /*----- state variables -----*/
 // My Board. Array of arrays. Nested arrays represent columns
 // 1 for player in position, -1 for dug position, null for empty
@@ -38,7 +51,9 @@ let fossils;
 
 
 /*----- cached elements  -----*/
-
+const msgEl = document.querySelector("h1");
+const InstructMeEl= document.querySelector("#my-message");
+const InstructRivalEl=document.querySelector("#rival-message")
 
 /*----- event listeners -----*/
 
@@ -83,7 +98,8 @@ function init(){
 function render(){
     renderMyBoard();
     renderRivalBoard();
-    // renderMessage();
+    renderMessageTurn();
+    renderMessageInstruct();
     // renderControls();
 }
 
@@ -107,4 +123,19 @@ function renderRivalBoard(){
        
 
     })
+}
+
+function renderMessageTurn(){
+    msgEl.textContent=NAME[turn];
+}
+
+function renderMessageInstruct(){
+    if (turn === 1) {
+        InstructRivalEl.textContent=INSTRUCT[turn]
+        InstructMeEl.textContent=null;
+    }
+    else{
+        InstructRivalEl.textContent=null;
+        InstructMeEl.textContent=INSTRUCT[turn];
+    }
 }
