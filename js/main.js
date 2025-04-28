@@ -15,14 +15,20 @@ Once all pieces hit, end game and declare winner.
 /*----- classes -----*/
 
 class MyFossilClass {
-constructor(id, name,size, image, coordinates, buried, rotation){
+constructor(id, name, shape, image, coordinates, buried, rotation){
     this.id=id;
     this.name=name;
-    this.size=size;
+    this.shape=shape;
     this.image=image;
     this.coordinates=null;
     this.rotation="horizontal";
     this.buried=false;
+}
+get width(){
+    return this.shape[0].length;
+}
+get height(){
+    return this.shape.length;
 }
     getElement(){
     return document.querySelector(`#${this.id}`);
@@ -42,12 +48,12 @@ constructor(id, name,size, image, coordinates, buried, rotation){
 
 
 const fossils = [
-    new MyFossilClass("my-fossil-head-1", "My carnivore head", 2, "images/dino-head-1.png"),
-    new MyFossilClass("my-fossil-head-2", "My herbivore head", 2, "images/dino-head-2.png"),
-    new MyFossilClass("my-fossil-body", "My dino body", 4, "images/dino-body.png"),
-    new MyFossilClass("my-fossil-full-body", "My dino full body", 5, "images/dino-full-body.png"),
-    new MyFossilClass("my-fossil-egg", "My dino egg", 1, "images/dino-egg.png"),
-    new MyFossilClass("my-fossil-boobytrap", "My boobytrap", 1, "images/boobytrap.png"),
+    new MyFossilClass("my-fossil-head-1", "My carnivore head",[[1,1],[1,1]], "images/dino-head-1.png"),
+    new MyFossilClass("my-fossil-head-2", "My herbivore head", [[1,1],[1,1]], "images/dino-head-2.png"),
+    new MyFossilClass("my-fossil-body", "My dino body",[[1,1,1,1,][1,0,1,0]], "images/dino-body.png"),
+    new MyFossilClass("my-fossil-full-body", "My dino full body",[[1,0,0,0],[1,1,1,1,],[1,0,1,0]], "images/dino-full-body.png"),
+    new MyFossilClass("my-fossil-egg", "My dino egg", [1], "images/dino-egg.png"),
+    new MyFossilClass("my-fossil-boobytrap", "My boobytrap", [1], "images/boobytrap.png"),
 
 ]
 /*----- constants -----*/
@@ -56,6 +62,7 @@ const fossils = [
 const imgSand=document.createElement("img");
 imgSand.src="images/sand.png";
 imgSand.setAttribute("id","sand");
+imgSand.style.opacity="0.6";
 
 const COLOURS ={
     "1": "orange",
@@ -108,26 +115,6 @@ const playAgainBtn=document.getElementById("play-again");
 /*----- event listeners -----*/
 playAgainBtn.addEventListener("click", init);
 
-
-// Make board cells listen to drag drop of fossil
-myCells=document.querySelectorAll("#my-board-wrap > .cell");
-myCells.forEach(cell =>{
-    cell.addEventListener("dragover", (event)=>{
-        event.preventDefault();
-});
-    cell.addEventListener("drop", (event)=>{
-        event.preventDefault();
-        const fossilId=event.dataTransfer.getData("text");
-        const fossil = fossils.find(fossil=>fossil.id===fossilId);
-        if (fossil){
-            const fossilEl = fossil.getElement();
-            cell.appendChild(fossilEl);
-            fossilEl.style.position="absolute";
-            fossilEl.style.left="0";
-            fossilEl.style.top="0";
-        }
-    });
-});
 
 
 /*----- functions -----*/
@@ -256,12 +243,65 @@ fossils.forEach((fossil)=>{
     }
 })
 
-// Make board cells receptive to image:
+// Make board cells listen to drag drop of fossil
+myCells=document.querySelectorAll("#my-board-wrap > .cell");
+myCells.forEach(cell =>{
+    cell.addEventListener("dragover", (event)=>{
+        event.preventDefault();
+});
+    cell.addEventListener("drop", (event)=>{
+        event.preventDefault();
+        const fossilId=event.dataTransfer.getData("text");
+        const fossil = fossils.find(fossil=>fossil.id===fossilId);
+        if (fossil){
+            const fossilEl = fossil.getElement();
+const colIdx=parseInt(cell.id[1]);
+const rowIdx=parseInt(cell.id[3]);
+let canPlace=true;
+for (let y=0; y<fossil.shape.length;y++){
+    for (let x=0; x<fossil.shape[0].length; x++){
+        if (fossil.shape[y][x]===1){
+            const targetCell=document.getElementById(`c${colIdx+x}r${rowIdx+y}`);
+            if (targetCell===false){
+                canPlace=false;
+                break;
+            }
+        }
+    }
+}
+if (canPlace===false) return;
+
+            cell.appendChild(fossilEl);
+            fossilEl.style.width=`calc(${fossil.width*6}vmin)`;
+            fossilEl.style.height=`calc(${fossil.height*6}vmin)`;
+            fossilEl.style.position="absolute";
+            fossilEl.style.left="0";
+            fossilEl.style.top="0";
+
+            for (let y=0;y<fossil.shape.length; y++){
+                for(let x=0; x<fossil.shape[0].length; x++){
+                    if (fossil.shape[y][x]===1){
+                        const targetCell=document.getElementById(`c${colIdx+x}r${rowIdx+y}`);
+                        if (targetCell){
+                            targetCell.dataset.fossilId=fossilId;
+                            targetCell.style.backgroundColor="yellow";
+                            targetCell.style.
+                            fossilEl.style.opacity="0.7";
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+
 
 
 
 // TODO;
 // ghost image following mouse; 
+// highlight grid cells when dragged over
 // semi transparency when fossil placed in sand
 // gap reduction between h4 and grid
 // make markers grow when relevant cell hovered
+// Allow rotation of fossils

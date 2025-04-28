@@ -117,6 +117,7 @@ grid-template-rows: 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 
 justify-content:center;
 align-items: center;
 padding-right: 4vmin;
+position:relative;
 }
 
 #rival-board-wrap {
