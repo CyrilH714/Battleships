@@ -14,13 +14,42 @@ Once all pieces hit, end game and declare winner.
 
 /*----- classes -----*/
 
-// const FossilClass= {
-// constructor(){
+class MyFossilClass {
+constructor(id, name,size, image, coordinates, buried, rotation){
+    this.id=id;
+    this.name=name;
+    this.size=size;
+    this.image=image;
+    this.coordinates=null;
+    this.rotation="horizontal";
+    this.buried=false;
+}
+    getElement(){
+    return document.querySelector(`#${this.id}`);
+}
+    moveFossil(x,y){
+    this.position = {x, y};
+}
+    returnFossil(){
+    this.coordinates= null;
+    this.buried=false;
+    this.rotation= "horizontal";
+}
+};
 
-// }
-// };
 
-// const myHead1= new FossilClass();
+
+
+
+const fossils = [
+    new MyFossilClass("my-fossil-head-1", "My carnivore head", 2, "images/dino-head-1.png"),
+    new MyFossilClass("my-fossil-head-2", "My herbivore head", 2, "images/dino-head-2.png"),
+    new MyFossilClass("my-fossil-body", "My dino body", 4, "images/dino-body.png"),
+    new MyFossilClass("my-fossil-full-body", "My dino full body", 5, "images/dino-full-body.png"),
+    new MyFossilClass("my-fossil-egg", "My dino egg", 1, "images/dino-egg.png"),
+    new MyFossilClass("my-fossil-boobytrap", "My boobytrap", 1, "images/boobytrap.png"),
+
+]
 /*----- constants -----*/
 
 // Use image for one "colour": need to create element and append later.
@@ -66,7 +95,7 @@ let winner;
 let turn;
 
 // fossils. 1/-1 for intact/dug. null for not on board yet.
-let fossils;
+let fossilState;
 
 
 /*----- cached elements  -----*/
@@ -77,7 +106,29 @@ const fossilImages= document.querySelectorAll("#my-fossil-images")
 const playAgainBtn=document.getElementById("play-again");
 
 /*----- event listeners -----*/
-playAgainBtn.addEventListener("click:", init);
+playAgainBtn.addEventListener("click", init);
+
+
+// Make board cells listen to drag drop of fossil
+myCells=document.querySelectorAll("#my-board-wrap > .cell");
+myCells.forEach(cell =>{
+    cell.addEventListener("dragover", (event)=>{
+        event.preventDefault();
+});
+    cell.addEventListener("drop", (event)=>{
+        event.preventDefault();
+        const fossilId=event.dataTransfer.getData("text");
+        const fossil = fossils.find(fossil=>fossil.id===fossilId);
+        if (fossil){
+            const fossilEl = fossil.getElement();
+            cell.appendChild(fossilEl);
+            fossilEl.style.position="absolute";
+            fossilEl.style.left="0";
+            fossilEl.style.top="0";
+        }
+    });
+});
+
 
 /*----- functions -----*/
 init() 
@@ -190,3 +241,27 @@ function renderMessageInstruct(){
 function renderControls(){
     playAgainBtn.style.visibility= winner ? "visible":"hidden";
 }
+
+
+
+
+// Moving fossil functions: made images draggable in HTML first
+// Store fossil ID when moved
+fossils.forEach((fossil)=>{
+    const imageEl=fossil.getElement().querySelector("img");
+    if (imageEl){
+        imageEl.addEventListener("dragstart", (event)=>{
+            event.dataTransfer.setData("text", fossil.id);
+        })
+    }
+})
+
+// Make board cells receptive to image:
+
+
+
+// TODO;
+// ghost image following mouse; 
+// semi transparency when fossil placed in sand
+// gap reduction between h4 and grid
+// make markers grow when relevant cell hovered

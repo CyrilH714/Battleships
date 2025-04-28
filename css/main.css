@@ -116,7 +116,7 @@ margin-top: -1vmin;
 grid-template-rows: 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin;
 justify-content:center;
 align-items: center;
-padding-right: 2vmin;
+padding-right: 4vmin;
 }
 
 #rival-board-wrap {
@@ -127,7 +127,7 @@ padding-right: 2vmin;
 grid-template-rows: 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin;
 justify-content:center;
 align-items: center;
-padding-left: 2vmin;
+padding-left: 4vmin;
 padding-right:0.5vmin;
 }
 .cell {
@@ -135,6 +135,7 @@ padding-right:0.5vmin;
     border: 0.1vmin solid grey;
     width:6vmin;
     height:6vmin;
+    position: relative;
 
   }
 
