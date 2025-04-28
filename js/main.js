@@ -129,16 +129,23 @@ function renderMyBoard(){
         colArr.forEach((cellVal,rowIdx)=>{
             const cellEl=document.getElementById(`c${colIdx}r${rowIdx}`);
             if (typeof COLOURS[cellVal]==="object"){
-                if (turn===0) cell.style.backgroundColor='none';
-                else
-                cellEl.appendChild(COLOURS[cellVal].cloneNode());   
+                if (turn===0){
+                    const existingImg = cellEl.querySelector('img');
+                    if (existingImg) {
+                        cellEl.removeChild(existingImg);
+                } 
+             } else { const existingImg = cellEl.querySelector('img');
+                    if (existingImg) {
+                        cellEl.removeChild(existingImg);}
+                cellEl.appendChild(COLOURS[cellVal].cloneNode());  
+                    } 
             } else {
                 cellEl.style.backgroundColor = COLOURS[cellVal];
             }
-        })
+        });
        
 
-    })
+    });
 }
 
 function renderRivalBoard(){
@@ -146,16 +153,23 @@ function renderRivalBoard(){
         colArr.forEach((cellVal,rowIdx)=>{
             const cellEl=document.getElementById(`cc${colIdx}r${rowIdx}`)
             if (typeof COLOURS[cellVal]==="object"){
-                if (turn===0) cell.style.backgroundColor='none';
-                else
-                cellEl.appendChild(COLOURS[cellVal].cloneNode());   
+                if (turn===0){
+                    const existingImg = cellEl.querySelector('img');
+                    if (existingImg) {
+                        cellEl.removeChild(existingImg);
+                } 
+             } else { const existingImg = cellEl.querySelector('img');
+                    if (existingImg) {
+                        cellEl.removeChild(existingImg);}
+                cellEl.appendChild(COLOURS[cellVal].cloneNode());  
+                    } 
             } else {
                 cellEl.style.backgroundColor = COLOURS[cellVal];
             }
-        })
+        });
        
 
-    })
+    });
 }
 
 function renderMessageTurn(){

@@ -8,7 +8,7 @@ margin: 0;
 padding: 0;
 font-family: "Open Sans", sans-serif;
 display:grid;
-grid-template-columns: 2fr 50fr 50fr 2fr ;
+grid-template-columns: 10vmin auto auto 10vmin ;
 grid-template-rows: auto auto auto auto auto auto; 
 grid-template-areas:
 "header header header header"
@@ -128,6 +128,7 @@ grid-template-rows: 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 
 justify-content:center;
 align-items: center;
 padding-left: 2vmin;
+padding-right:0.5vmin;
 }
 .cell {
     border-radius: 10%;
@@ -206,21 +207,44 @@ padding-left: 2vmin;
   }
 
 
-
-  div[id*="-fossil-"]{
-    grid-area:myFossils;
-    justify-content: space-between;
+section[id*="-fossils"]{
     display: flex;
-    flex-direction: column;
-    margin-left: 3vmin;
-    margin-right:1vmin;
+    flex-direction:column;
     align-items: center;
+    justify-content:flex-start;
+    gap:0vmin;
+    margin-bottom: 55vmin;
+    max-width:8vmin;
+    justify-self:center;
    
 
+}
+  div[id*="-fossil-images"]{
+    grid-area:myFossils;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap:0vmin;
+    /* flex-direction: column; */
+    margin-left: 0vmin;
+    margin-right:0vmin;
+    justify-content:center;
+    align-items: center;
+
+    /* position:relative; */
+  }
+
+  div[id*='-fossil-']{
+
+    position:relative;
+    width:10vmin;
+    height: 10vmin;
+    margin:0vmin;
+    flex: 0 auto;
   }
 
   .highlight {
-    transform: scale(0.9);
+    transform: scale(1.4);
     transition: transform 150ms ease-out;
     border-top-color: hex(#5C4033)
 /* TODO: Use JS to link hovering over board div to highlighted row/column marker */
@@ -231,9 +255,11 @@ padding-left: 2vmin;
     width: 10vmin;
     margin-bottom: 0vmin;
     justify-content: right;
-    display: flex;
+    display: block;
     align-items: right;
     position: absolute;
+    cursor: grab;
+
     /* background-color: red; */
    
   }
@@ -246,3 +272,11 @@ padding-left: 2vmin;
     border: 0.1vmin solid grey;
   }
   
+  .vertical-marker:has(.cell:hover){
+    transform: scale(0.9);
+    transition: transform 150ms ease-out;
+  }
+  .vertical-arrow:has(.cell:hover){
+    transform: scale(0.9);
+    transition: transform 150ms ease-out;
+  }
