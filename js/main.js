@@ -1,21 +1,40 @@
 /*
 THEME: DINO DIGGER
 -Want to hide our dino fossils from rival paleontologist
--Choose where to bury fossils (can add rotation option later).
+-Choose where to bury fossils. Make images draggable,
+on board convert to coloured cells.
 -Randomly generate where enemy buries theirs (hide from user)
--Take turns with rival to guess their fossil location on site/grid
--Correct guess means go again. Boobytrap means dig on your own site/grid
+-Take turns with rival to guess their fossil location on site/grid.
+-Miss makes grid go a colour, hit makes it white.
+-bonus: hit boobytrap means red.
+-Correct guess means go again. Boobytrap means dig on other's own site/grid
+Once all pieces hit, end game and declare winner.
 */
 
 
+/*----- classes -----*/
 
+// const FossilClass= {
+// constructor(){
+
+// }
+// };
+
+// const myHead1= new FossilClass();
 /*----- constants -----*/
+
+// Use image for one "colour": need to create element and append later.
+const imgSand=document.createElement("img");
+imgSand.src="images/sand.png";
+imgSand.setAttribute("id","sand");
+
 const COLOURS ={
     "1": "orange",
     "-1": "white",
-    "null" : "none",
-    "0": "black",
+    "null" : imgSand,
+    "0": "grey",
 }
+
 
 const NAME ={
     "1": "Your turn",
@@ -52,8 +71,10 @@ let fossils;
 
 /*----- cached elements  -----*/
 const msgEl = document.querySelector("h1");
-const InstructMeEl= document.querySelector("#my-message");
-const InstructRivalEl=document.querySelector("#rival-message")
+const instructMeEl= document.querySelector("#my-message");
+const instructRivalEl=document.querySelector("#rival-message")
+const fossilImages= document.querySelectorAll("#my-fossil-images")
+const playAgainBtn=document.getElementById("play-again");
 
 /*----- event listeners -----*/
 
@@ -96,23 +117,29 @@ function init(){
 }
 
 function render(){
-    renderMyBoard();
+    // renderMyBoard();
     renderRivalBoard();
     renderMessageTurn();
     renderMessageInstruct();
-    // renderControls();
+    renderControls();
 }
 
-function renderMyBoard(){
-    myBoard.forEach((colArr,colIdx)=>{
-        colArr.forEach((cellVal,rowIdx)=>{
-            const cellEl=document.getElementById(`c${colIdx}r${rowIdx}`)
-            cellEl.style.backgroundColor=COLOURS[cellVal];
-        })
+// function renderMyBoard(){
+//     myBoard.forEach((colArr,colIdx)=>{
+//         colArr.forEach((cellVal,rowIdx)=>{
+//             const cellEl=document.getElementById(`c${colIdx}r${rowIdx}`);
+//             if (typeof COLOURS[cellVal]==="object"){
+//                 if (turn===0) cell.style.backgroundColor='none';
+//                 else
+//                 cell.appendChild(COLOURS[cellVal].cloneNode());   
+//             } else {
+//                 cell.style.backgroundColor = COLOURS[cellVal];
+//             }
+//         })
        
 
-    })
-}
+//     })
+// }
 
 function renderRivalBoard(){
     rivalBoard.forEach((colArr,colIdx)=>{
@@ -131,11 +158,15 @@ function renderMessageTurn(){
 
 function renderMessageInstruct(){
     if (turn === 1) {
-        InstructRivalEl.textContent=INSTRUCT[turn]
-        InstructMeEl.textContent=null;
+        instructRivalEl.textContent=INSTRUCT[turn]
+        instructMeEl.textContent=null;
     }
     else{
-        InstructRivalEl.textContent=null;
-        InstructMeEl.textContent=INSTRUCT[turn];
+        instructRivalEl.textContent=null;
+        instructMeEl.textContent=INSTRUCT[turn];
     }
+}
+
+function renderControls(){
+    playAgainBtn.style.visibility= winner ? "visible":"hidden";
 }
