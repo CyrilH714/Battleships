@@ -77,7 +77,7 @@ const fossilImages= document.querySelectorAll("#my-fossil-images")
 const playAgainBtn=document.getElementById("play-again");
 
 /*----- event listeners -----*/
-
+playAgainBtn.addEventListener("click:", init);
 
 /*----- functions -----*/
 init() 
@@ -117,35 +117,41 @@ function init(){
 }
 
 function render(){
-    // renderMyBoard();
+    renderMyBoard();
     renderRivalBoard();
     renderMessageTurn();
     renderMessageInstruct();
     renderControls();
 }
 
-// function renderMyBoard(){
-//     myBoard.forEach((colArr,colIdx)=>{
-//         colArr.forEach((cellVal,rowIdx)=>{
-//             const cellEl=document.getElementById(`c${colIdx}r${rowIdx}`);
-//             if (typeof COLOURS[cellVal]==="object"){
-//                 if (turn===0) cell.style.backgroundColor='none';
-//                 else
-//                 cell.appendChild(COLOURS[cellVal].cloneNode());   
-//             } else {
-//                 cell.style.backgroundColor = COLOURS[cellVal];
-//             }
-//         })
+function renderMyBoard(){
+    myBoard.forEach((colArr,colIdx)=>{
+        colArr.forEach((cellVal,rowIdx)=>{
+            const cellEl=document.getElementById(`c${colIdx}r${rowIdx}`);
+            if (typeof COLOURS[cellVal]==="object"){
+                if (turn===0) cell.style.backgroundColor='none';
+                else
+                cellEl.appendChild(COLOURS[cellVal].cloneNode());   
+            } else {
+                cellEl.style.backgroundColor = COLOURS[cellVal];
+            }
+        })
        
 
-//     })
-// }
+    })
+}
 
 function renderRivalBoard(){
     rivalBoard.forEach((colArr,colIdx)=>{
         colArr.forEach((cellVal,rowIdx)=>{
             const cellEl=document.getElementById(`cc${colIdx}r${rowIdx}`)
-            cellEl.style.backgroundColor=COLOURS[cellVal];
+            if (typeof COLOURS[cellVal]==="object"){
+                if (turn===0) cell.style.backgroundColor='none';
+                else
+                cellEl.appendChild(COLOURS[cellVal].cloneNode());   
+            } else {
+                cellEl.style.backgroundColor = COLOURS[cellVal];
+            }
         })
        
 
