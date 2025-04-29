@@ -137,6 +137,7 @@ padding-right:0.5vmin;
     width:6vmin;
     height:6vmin;
     position: relative;
+    z-index: 1
 
   }
 
@@ -262,6 +263,7 @@ section[id*="-fossils"]{
     position: absolute;
     cursor: grab;
     z-index: 1;
+    /* pointer-events:none; */
 
     /* background-color: red; */
    
@@ -273,7 +275,8 @@ section[id*="-fossils"]{
     height: 6vmin;
     border-radius: 10%;
     border: 0.1vmin solid grey;
-    z-index: 2;
+    z-index: 1;
+    position: relative;
   }
   
   .vertical-marker:has(.cell:hover){
@@ -283,4 +286,15 @@ section[id*="-fossils"]{
   .vertical-arrow:has(.cell:hover){
     transform: scale(0.9);
     transition: transform 150ms ease-out;
+  }
+
+  .cell.tempHighlight::before {
+    content:"";
+    inset:0;
+    outline:0px dashed orange;
+    background-color: yellow;
+    opacity: 0.3;
+    z-index: 2;
+    position: absolute;
+    pointer-events:none;
   }

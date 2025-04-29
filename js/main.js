@@ -68,6 +68,8 @@ const fossils = [
 const imgSand=document.createElement("img");
 imgSand.src="images/sand.png";
 imgSand.setAttribute("id","sand");
+// imgSand.style.zIndex=1;
+// imgSand.style.position="relative"
 
 imgSandTransparent=document.createElement("img");
 imgSandTransparent.src="images/sand.png";
@@ -128,6 +130,8 @@ let turn;
 // fossils. 1/-1 for intact/dug. null for not on board yet.
 let fossilState;
 
+// For dragging fossil and adding highlight temporarily:
+let draggedFossil=null;
 
 /*----- cached elements  -----*/
 const msgEl = document.querySelector("h1");
@@ -189,7 +193,7 @@ function render(){
 function renderMyBoard(){
     myBoard.forEach((colArr,colIdx)=>{
         colArr.forEach((cellVal,rowIdx)=>{
-            if (cellVal=0) return;
+            if (cellVal===0) return;
             const cellEl=document.getElementById(`c${colIdx}r${rowIdx}`);
             if (typeof DIGCOLOURS[cellVal]==="object"){
                 if (turn===0){
@@ -227,7 +231,7 @@ function renderRivalBoard(){
                 cellEl.appendChild(DIGCOLOURS[cellVal].cloneNode());  
                     } 
             } else {
-                cellEl.style.backgroundColor = DIG[cellVal];
+                cellEl.style.backgroundColor = DIGCOLOURS[cellVal];
             }
         });
        
@@ -263,7 +267,8 @@ fossils.forEach((fossil)=>{
     const imageEl=fossil.getElement().querySelector("img");
     if (imageEl){
         imageEl.addEventListener("dragstart", (event)=>{
-            event.dataTransfer.setData("text", fossil.id);
+            draggedFossil=fossil;
+            event.dataTransfer.setData("text/plain", fossil.id);
         });
     }
 })
@@ -273,22 +278,51 @@ myCells=document.querySelectorAll("#my-board-wrap > .cell");
 myCells.forEach(cell =>{
     cell.addEventListener("dragover", (event)=>{
         event.preventDefault();
+        
+        // temporarily highlight cells where hovered over
+        
+        if (!draggedFossil) return;
+
+        clearTempHighlight();
+
+        const match=cell.id.match(/^c(\d+)r(\d+)$/);
+        const colIdx=parseInt(match[1]);
+        const rowIdx=parseInt(match[2]);
+
+for (let y=0; y<draggedFossil.shape.length;y++){
+    for (let x=0; x<draggedFossil.shape[0].length; x++){
+        if (draggedFossil.shape[y][x]===1){
+            const targetCell=document.getElementById(`c${colIdx+x}r${rowIdx+y}`);
+            if (targetCell) {
+                targetCell.classList.add("tempHighlight");
+            }
+        }
+    }
+}
+        
 });
+cell.addEventListener("dragleave", (event)=>{
+    
+    if (!draggedFossil) return;
+    clearTempHighlight();
+})
     cell.addEventListener("drop", (event)=>{
         event.preventDefault();
-        const fossilId=event.dataTransfer.getData("text");
-        const fossil = fossils.find(fossil=>fossil.id===fossilId);
-
-        if (fossil){
-            const fossilEl = fossil.getElement();
-const colIdx=parseInt(cell.id[1]);
-const rowIdx=parseInt(cell.id[3]);
+        clearTempHighlight();
+    
+        
+if (!draggedFossil) return;
+        if (draggedFossil){
+            const fossilEl = draggedFossil.getElement();
+            const match=cell.id.match(/^c(\d+)r(\d+)$/);
+            const colIdx=parseInt(match[1]);
+            const rowIdx=parseInt(match[2]);
 let canPlace=true;
-for (let y=0; y<fossil.shape.length;y++){
-    for (let x=0; x<fossil.shape[0].length; x++){
-        if (fossil.shape[y][x]===1){
+for (let y=0; y<draggedFossil.shape.length;y++){
+    for (let x=0; x<draggedFossil.shape[0].length; x++){
+        if (draggedFossil.shape[y][x]===1){
             const targetCell=document.getElementById(`c${colIdx+x}r${rowIdx+y}`);
-            if (targetCell===false){
+            if (!targetCell){
                 canPlace=false;
                 break;
             }
@@ -297,61 +331,48 @@ for (let y=0; y<fossil.shape.length;y++){
 }
     if (canPlace===false) return;
 
-        //    const boardWrap=document.getElementById("my-board-wrap");
-            // boardWrap.appendChild(fossilEl);
-
-            // const cellRect = cell.getBoundingClientRect();
-            // const boardRect = boardWrap.getBoundingClientRect();
-            // const offsetX=cellRect.left-boardRect.left;
-            // const offsetY=cellRect.top-boardRect.top;
-            // fossilEl.style.width = `${cellRect.width*fossil.width}px`;
-            // fossilEl.style.height = `${cellRect.height*fossil.height}px`;
-            // fossilEl.style.position="absolute";
-            // fossilEl.style.left=`${offsetX}px`;
-            // fossilEl.style.top=`${offsetY}px`;
-            // fossilEl.style.display="none";
-
-            cell.appendChild(fossilEl);
-             fossilEl.style.width=`calc(${fossil.width*6}vmin)`;
-             fossilEl.style.height=`calc(${fossil.height*6}vmin)`;
-             fossilEl.style.position="absolute";
-             fossilEl.style.left="0";
-             fossilEl.style.top="0";
-            //  fossilEl.style.display="none";
-
-            for (let y=0;y<fossil.shape.length; y++){
-                for(let x=0; x<fossil.shape[0].length; x++){
-                    if (fossil.shape[y][x]===1){
+            for (let y=0;y<draggedFossil.shape.length; y++){
+                for(let x=0; x<draggedFossil.shape[0].length; x++){
+                    if (draggedFossil.shape[y][x]===1){
                         const targetCol=colIdx+x;
                         const targetRow=rowIdx+y;
                         const targetCell=document.getElementById(`c${targetCol}r${targetRow}`);
                     
                         if (targetCell){
-                            targetCell.dataset.fossilId=fossilId;
+                            targetCell.dataset.fossilId=draggedFossil.id;
                             const sandImage=targetCell.querySelector("img");
                             if (sandImage){
                                 targetCell.removeChild(sandImage);
                             };
                             fossilEl.style.display="none";
                         
-                            myBoard[targetCol][targetRow]=1;
+                           myBoard[targetCol][targetRow]=1;
                             if (fossilEl.id==="my-fossil-boobytrap"){myBoard[targetCol][targetRow]=2};
                             targetCell.style.backgroundColor=DIGCOLOURS[myBoard[targetCol][targetRow]]||"yellow";
+                            
                         }
                     }
                 }
             }
         }
+        draggedFossil=null;
 });
+
 });
 
 
 
-
+function clearTempHighlight(){
+    document.querySelectorAll(".tempHighlight").forEach(cell=>{
+        cell.classList.remove("tempHighlight")
+    })
+}
 // TODO;
-// ghost image following mouse; 
+
 // highlight grid cells when dragged over
-// semi transparency when fossil placed in sand
+// limit placement so highlighted stays within board
+// once all placed, randomly place enemy fossils
+// then change turn to start digging
 // gap reduction between h4 and grid
 // make markers grow when relevant cell hovered
 // Allow rotation of fossils
