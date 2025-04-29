@@ -45,14 +45,32 @@ get height(){
 };
 
 
-// class RivalFossilClass {
-
-    // }
+class RivalFossilClass {
+constructor(id, name, shape, image){
+    yhis.id=id;
+    this.name=name;
+    this.shape=WaveShaperNode;
+    this.image=image;
+    this.coordinates=null;
+    this.rotation="horizontal";
+    this.buried=false;
+}
+get width(){
+    return this.shape[0].length;
+}
+get height(){
+    return this.shape.length;
+}
+    }
     
 
 
 
 
+
+
+
+/*----- constants -----*/
 const fossils = [
     new MyFossilClass("my-fossil-head-1", "My carnivore head",[[1,1],[1,1]], "images/dino-head-1.png"),
     new MyFossilClass("my-fossil-head-2", "My herbivore head", [[1,1],[1,1]], "images/dino-head-2.png"),
@@ -60,9 +78,15 @@ const fossils = [
     new MyFossilClass("my-fossil-full-body", "My dino full body",[[0,1,1],[0,1,1],[1,1,0]], "images/dino-full-body.png"),
     new MyFossilClass("my-fossil-egg", "My dino egg", [[1]], "images/dino-egg.png"),
     new MyFossilClass("my-fossil-boobytrap", "My boobytrap", [[1]], "images/boobytrap.png"),
-
 ]
-/*----- constants -----*/
+const rivalFossils= [
+    new RivalFossilClass("rival-fossil-head-1", "Rival carnivore head",[[1,1],[1,1]], "images/dino-head-1.png"),
+    new RivalFossilClass("rival-fossil-head-2", "Rival herbivore head", [[1,1],[1,1]], "images/dino-head-2.png"),
+    new RivalFossilClass("rival-fossil-body", "Rival dino body",[[1,0,1,0],[1,1,1,1]], "images/dino-body.png"),
+    new RivalFossilClass("rival-fossil-full-body", "Rival dino full body",[[0,1,1],[0,1,1],[1,1,0]], "images/dino-full-body.png"),
+    new RivalFossilClass("rival-fossil-egg", "Rival dino egg", [[1]], "images/dino-egg.png"),
+    new RivalFossilClass("rival-fossil-boobytrap", "Rival boobytrap", [[1]], "images/boobytrap.png"),
+]
 
 // Use image for one "colour": need to create element and append later.
 const imgSand=document.createElement("img");
@@ -192,6 +216,7 @@ function render(){
     renderMessageTurn();
     renderMessageInstruct();
     renderControls();
+    
 }
 
 function renderMyBoard(){
@@ -200,12 +225,13 @@ function renderMyBoard(){
             if (cellVal===0) return;
             const cellEl=document.getElementById(`c${colIdx}r${rowIdx}`);
             if (typeof DIGCOLOURS[cellVal]==="object"){
-                if (turn===0){
-                    const existingImg = cellEl.querySelector('img');
-                    if (existingImg) {
-                        cellEl.removeChild(existingImg);
-                } 
-             } else { const existingImg = cellEl.querySelector('img');
+                // if (turn===null){
+                //     const existingImg = cellEl.querySelector('img');
+                //     if (existingImg) {
+                //         cellEl.removeChild(existingImg);
+                // } 
+            //  } else 
+             { const existingImg = cellEl.querySelector('img');
                     if (existingImg) {
                         cellEl.removeChild(existingImg);}
                 cellEl.appendChild(DIGCOLOURS[cellVal].cloneNode());  
@@ -363,6 +389,14 @@ for (let y=0; y<draggedFossil.shape.length;y++){
                 }
             }
         }
+        draggedFossil.buried=true;
+        
+        
+        if (areMyFossilsPlaced){
+            turn=1;
+            placeRivalShips();
+            render();
+        }
         draggedFossil=null;
 });
 
@@ -375,11 +409,42 @@ function clearTempHighlight(){
         cell.classList.remove("tempHighlight")
     })
 }
+
+
+
+function areMyFossilsPlaced(){
+    return fossils.every(fossil=>fossil.buried);
+}
+
+// Rival randomly places pieces after we've buried all of ours:
+// Random coordinate generator for board
+function generateRandomXY(){
+    const minValue=0;
+    const maxValue=10;
+    const randomColumn=Math.floor(Math.random()*maxValue);
+    const randomRow=Math.floor(Math.random()*maxValue);
+    console.log(randomColumn,randomRow)
+    return[randomColumn,randomRow];
+}
+placeRivalShips(){
+
+
+}
+
+    
+
+
+
+
 // TODO;
 
 
 // once all placed, randomly place enemy fossils
 // then change turn to start digging
+// make rival guess randomly, but if hit then search neighburs
+// make boobytrap affect rival space
+
+// Bonus:
+// Allow rotation of fossils
 // gap reduction between h4 and grid
 // make markers grow when relevant cell hovered
-// Allow rotation of fossils
