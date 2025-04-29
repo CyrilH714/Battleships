@@ -110,6 +110,10 @@ const INSTRUCT ={
     "-1":"Your rival is digging!",
     
 };
+const RESULT={
+    "1":"You win!",
+    "-1":"You lost!",
+}
 
 /*----- state variables -----*/
 // My Board. Array of arrays. Nested arrays represent columns
@@ -240,7 +244,11 @@ function renderRivalBoard(){
 }
 
 function renderMessageTurn(){
-    msgEl.textContent=NAME[turn];
+    if (winner!=null){
+        msgEl.textContent=RESULT[turn];
+    }
+    else {
+    msgEl.textContent=NAME[turn]};
 }
 
 function renderMessageInstruct(){
@@ -369,8 +377,7 @@ function clearTempHighlight(){
 }
 // TODO;
 
-// highlight grid cells when dragged over
-// limit placement so highlighted stays within board
+
 // once all placed, randomly place enemy fossils
 // then change turn to start digging
 // gap reduction between h4 and grid
