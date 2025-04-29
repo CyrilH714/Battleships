@@ -47,9 +47,9 @@ get height(){
 
 class RivalFossilClass {
 constructor(id, name, shape, image){
-    yhis.id=id;
+    this.id=id;
     this.name=name;
-    this.shape=WaveShaperNode;
+    this.shape=shape;
     this.image=image;
     this.coordinates=null;
     this.rotation="horizontal";
@@ -216,6 +216,7 @@ function render(){
     renderMessageTurn();
     renderMessageInstruct();
     renderControls();
+    // renderDigRivalBoard();
     
 }
 
@@ -392,9 +393,9 @@ for (let y=0; y<draggedFossil.shape.length;y++){
         draggedFossil.buried=true;
         
         
-        if (areMyFossilsPlaced){
+        if (areMyFossilsPlaced()){
             turn=1;
-            placeRivalShips();
+            placeRivalFossils();
             render();
         }
         draggedFossil=null;
@@ -426,14 +427,47 @@ function generateRandomXY(){
     console.log(randomColumn,randomRow)
     return[randomColumn,randomRow];
 }
-placeRivalShips(){
+function placeRivalFossils(){
+rivalFossils.forEach((rivalFossil)=>{
+let placed= false;
+while (placed===false){
+    const [newCol,newRow]= generateRandomXY();
+    if(rivalFossilFitsOnBoard(rivalFossil,newCol,newRow)){
+    rivalFossil.coordinates={newCol,newRow};
+    rivalFossil.buried=true;
+    placeOnRivalBoard(rivalFossil,newCol,newRow);
+    placed=true;
+}
+}
+})
+turn=1;
+}
 
-
+function placeOnRivalBoard(fossil,column,row){
+    for (let y=0;y<fossil.shape.length; y++){
+        for (let x=0;x<fossil.shape[0].length; x++){
+            if (fossil.shape[y][x]===1){
+                const targetCol=column+x;
+                const targetRow=row+y;
+                rivalBoard[targetCol][targetRow]=1
+            }
+        }
+    }
 }
 
     
-
-
+function rivalFossilFitsOnBoard(fossil,column,row){
+    for (let y=0;y<fossil.shape.length; y++){
+        for (let x=0;x<fossil.shape[0].length; x++){
+            if (fossil.shape[y][x]===1){
+                const targetCol=column+x;
+                const targetRow=row+y;
+                if (targetCol>9||targetRow>9||rivalBoard[targetCol][targetRow]&&rivalBoard[targetRow]!=null){
+                    return false;
+                }
+}}}
+return true;
+        }
 
 
 // TODO;
@@ -446,5 +480,6 @@ placeRivalShips(){
 
 // Bonus:
 // Allow rotation of fossils
+// Prevent overlapping placement of fossils
 // gap reduction between h4 and grid
 // make markers grow when relevant cell hovered
