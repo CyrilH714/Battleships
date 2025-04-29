@@ -261,6 +261,7 @@ section[id*="-fossils"]{
     align-items: right;
     position: absolute;
     cursor: grab;
+    z-index: 1;
 
     /* background-color: red; */
    
@@ -272,6 +273,7 @@ section[id*="-fossils"]{
     height: 6vmin;
     border-radius: 10%;
     border: 0.1vmin solid grey;
+    z-index: 2;
   }
   
   .vertical-marker:has(.cell:hover){

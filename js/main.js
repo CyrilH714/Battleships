@@ -24,6 +24,7 @@ constructor(id, name, shape, image, coordinates, buried, rotation){
     this.rotation="horizontal";
     this.buried=false;
 }
+
 get width(){
     return this.shape[0].length;
 }
@@ -44,16 +45,21 @@ get height(){
 };
 
 
+// class RivalFossilClass {
+
+    // }
+    
+
 
 
 
 const fossils = [
     new MyFossilClass("my-fossil-head-1", "My carnivore head",[[1,1],[1,1]], "images/dino-head-1.png"),
     new MyFossilClass("my-fossil-head-2", "My herbivore head", [[1,1],[1,1]], "images/dino-head-2.png"),
-    new MyFossilClass("my-fossil-body", "My dino body",[[1,1,1,1,][1,0,1,0]], "images/dino-body.png"),
-    new MyFossilClass("my-fossil-full-body", "My dino full body",[[1,0,0,0],[1,1,1,1,],[1,0,1,0]], "images/dino-full-body.png"),
-    new MyFossilClass("my-fossil-egg", "My dino egg", [1], "images/dino-egg.png"),
-    new MyFossilClass("my-fossil-boobytrap", "My boobytrap", [1], "images/boobytrap.png"),
+    new MyFossilClass("my-fossil-body", "My dino body",[[1,0,1,0],[1,1,1,1]], "images/dino-body.png"),
+    new MyFossilClass("my-fossil-full-body", "My dino full body",[[0,1,1],[0,1,1],[1,1,0]], "images/dino-full-body.png"),
+    new MyFossilClass("my-fossil-egg", "My dino egg", [[1]], "images/dino-egg.png"),
+    new MyFossilClass("my-fossil-boobytrap", "My boobytrap", [[1]], "images/boobytrap.png"),
 
 ]
 /*----- constants -----*/
@@ -62,28 +68,46 @@ const fossils = [
 const imgSand=document.createElement("img");
 imgSand.src="images/sand.png";
 imgSand.setAttribute("id","sand");
-imgSand.style.opacity="0.6";
 
-const COLOURS ={
-    "1": "orange",
-    "-1": "white",
+imgSandTransparent=document.createElement("img");
+imgSandTransparent.src="images/sand.png";
+imgSandTransparent.setAttribute("id","sand");
+imgSandTransparent.style.opacity="0.6";
+
+const imgCrack=document.createElement("img");
+imgCrack.src="images/crack.png";
+
+
+const DIGCOLOURS ={
+    "1": "#E3DAC9",
+    "-1": imgCrack,
     "null" : imgSand,
-    "0": "grey",
-}
+    "0": imgSandTransparent,
+    "2":"red"
+};
 
+const FOSSILCOLOURS={
+    "my-fossil-boobytrap": "red",
+    "my-fossil-head-1": "#E3DAC9",
+    "my-fossil-head-2":"#E3DAC9",
+    "my-fossil-body":"#E3DAC9",
+    "my-fossil-full-body":"#E3DAC9",
+    "my-fossil-egg":"#E3DAC9"
+
+};
 
 const NAME ={
     "1": "Your turn",
     "-1": "Rival's turn",
     "null": "Hide your fossils",
-}
+};
 
 const INSTRUCT ={
    "null": "Hide your fossils here!",
     "1": "Choose a spot to dig!",
     "-1":"Your rival is digging!",
     
-}
+};
 
 /*----- state variables -----*/
 // My Board. Array of arrays. Nested arrays represent columns
@@ -165,8 +189,9 @@ function render(){
 function renderMyBoard(){
     myBoard.forEach((colArr,colIdx)=>{
         colArr.forEach((cellVal,rowIdx)=>{
+            if (cellVal=0) return;
             const cellEl=document.getElementById(`c${colIdx}r${rowIdx}`);
-            if (typeof COLOURS[cellVal]==="object"){
+            if (typeof DIGCOLOURS[cellVal]==="object"){
                 if (turn===0){
                     const existingImg = cellEl.querySelector('img');
                     if (existingImg) {
@@ -175,10 +200,10 @@ function renderMyBoard(){
              } else { const existingImg = cellEl.querySelector('img');
                     if (existingImg) {
                         cellEl.removeChild(existingImg);}
-                cellEl.appendChild(COLOURS[cellVal].cloneNode());  
+                cellEl.appendChild(DIGCOLOURS[cellVal].cloneNode());  
                     } 
             } else {
-                cellEl.style.backgroundColor = COLOURS[cellVal];
+                cellEl.style.backgroundColor = DIGCOLOURS[cellVal];
             }
         });
        
@@ -190,7 +215,7 @@ function renderRivalBoard(){
     rivalBoard.forEach((colArr,colIdx)=>{
         colArr.forEach((cellVal,rowIdx)=>{
             const cellEl=document.getElementById(`cc${colIdx}r${rowIdx}`)
-            if (typeof COLOURS[cellVal]==="object"){
+            if (typeof DIGCOLOURS[cellVal]==="object"){
                 if (turn===0){
                     const existingImg = cellEl.querySelector('img');
                     if (existingImg) {
@@ -199,10 +224,10 @@ function renderRivalBoard(){
              } else { const existingImg = cellEl.querySelector('img');
                     if (existingImg) {
                         cellEl.removeChild(existingImg);}
-                cellEl.appendChild(COLOURS[cellVal].cloneNode());  
+                cellEl.appendChild(DIGCOLOURS[cellVal].cloneNode());  
                     } 
             } else {
-                cellEl.style.backgroundColor = COLOURS[cellVal];
+                cellEl.style.backgroundColor = DIG[cellVal];
             }
         });
        
@@ -239,7 +264,7 @@ fossils.forEach((fossil)=>{
     if (imageEl){
         imageEl.addEventListener("dragstart", (event)=>{
             event.dataTransfer.setData("text", fossil.id);
-        })
+        });
     }
 })
 
@@ -253,6 +278,7 @@ myCells.forEach(cell =>{
         event.preventDefault();
         const fossilId=event.dataTransfer.getData("text");
         const fossil = fossils.find(fossil=>fossil.id===fossilId);
+
         if (fossil){
             const fossilEl = fossil.getElement();
 const colIdx=parseInt(cell.id[1]);
@@ -269,30 +295,54 @@ for (let y=0; y<fossil.shape.length;y++){
         }
     }
 }
-if (canPlace===false) return;
+    if (canPlace===false) return;
+
+        //    const boardWrap=document.getElementById("my-board-wrap");
+            // boardWrap.appendChild(fossilEl);
+
+            // const cellRect = cell.getBoundingClientRect();
+            // const boardRect = boardWrap.getBoundingClientRect();
+            // const offsetX=cellRect.left-boardRect.left;
+            // const offsetY=cellRect.top-boardRect.top;
+            // fossilEl.style.width = `${cellRect.width*fossil.width}px`;
+            // fossilEl.style.height = `${cellRect.height*fossil.height}px`;
+            // fossilEl.style.position="absolute";
+            // fossilEl.style.left=`${offsetX}px`;
+            // fossilEl.style.top=`${offsetY}px`;
+            // fossilEl.style.display="none";
 
             cell.appendChild(fossilEl);
-            fossilEl.style.width=`calc(${fossil.width*6}vmin)`;
-            fossilEl.style.height=`calc(${fossil.height*6}vmin)`;
-            fossilEl.style.position="absolute";
-            fossilEl.style.left="0";
-            fossilEl.style.top="0";
+             fossilEl.style.width=`calc(${fossil.width*6}vmin)`;
+             fossilEl.style.height=`calc(${fossil.height*6}vmin)`;
+             fossilEl.style.position="absolute";
+             fossilEl.style.left="0";
+             fossilEl.style.top="0";
+            //  fossilEl.style.display="none";
 
             for (let y=0;y<fossil.shape.length; y++){
                 for(let x=0; x<fossil.shape[0].length; x++){
                     if (fossil.shape[y][x]===1){
-                        const targetCell=document.getElementById(`c${colIdx+x}r${rowIdx+y}`);
+                        const targetCol=colIdx+x;
+                        const targetRow=rowIdx+y;
+                        const targetCell=document.getElementById(`c${targetCol}r${targetRow}`);
+                    
                         if (targetCell){
                             targetCell.dataset.fossilId=fossilId;
-                            targetCell.style.backgroundColor="yellow";
-                            targetCell.style.
-                            fossilEl.style.opacity="0.7";
+                            const sandImage=targetCell.querySelector("img");
+                            if (sandImage){
+                                targetCell.removeChild(sandImage);
+                            };
+                            fossilEl.style.display="none";
+                        
+                            myBoard[targetCol][targetRow]=1;
+                            if (fossilEl.id==="my-fossil-boobytrap"){myBoard[targetCol][targetRow]=2};
+                            targetCell.style.backgroundColor=DIGCOLOURS[myBoard[targetCol][targetRow]]||"yellow";
                         }
                     }
                 }
             }
         }
-    });
+});
 });
 
 
