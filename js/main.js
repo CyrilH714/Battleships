@@ -111,13 +111,15 @@ const DIGCOLOURS = {
     "1": "#E3DAC9",
     "2": "black",
     "null":imgSandTransparent,
+    "3":"none",
 };
 
 const DUGCOLOURS = {
     "1": imgCrack,
     "null": "brown",
-    // "0": imgSandTransparent,
+    "0": "brown",
     "2": "red",
+    "3":"none",
 }
 
 // const FOSSILCOLOURS={
@@ -181,13 +183,6 @@ const rivalBoardCells= document.querySelectorAll("#rival-board-wrap .cell");
 /*----- event listeners -----*/
 playAgainBtn.addEventListener("click", init);
 
-if (turn===1){
-myBoardCells.addEventListener("click", renderRivalDig)}
-
-else if (turn===-1){
-rivalBoardCells.forEach((cell)=>{
-    cell.addEventListener("click", handleClick)})
-}
 // else {
 //     myBoardCells.removeEventListener("click", renderRivalDig);
 //     rivalBoardCells.removeEventListener("click", renderMyDig); 
@@ -238,7 +233,8 @@ function render() {
     renderMessageTurn();
     renderMessageInstruct();
     renderControls();
-    // renderRivalDig();
+    renderHandleClick();
+    renderRivalDig();
     // renderMyDig();
 
 }
@@ -349,6 +345,7 @@ myCells.forEach(cell => {
         clearTempHighlight();
 
         const match = cell.id.match(/^c(\d+)r(\d+)$/);
+        if (!match) return;
         const colIdx = parseInt(match[1]);
         const rowIdx = parseInt(match[2]);
 
@@ -469,7 +466,7 @@ function placeRivalFossils() {
         }
     })
     turn = 1;
-    renderMyDig()
+
 }
 
 function placeOnRivalBoard(fossil, column, row) {
@@ -478,7 +475,7 @@ function placeOnRivalBoard(fossil, column, row) {
             if (fossil.shape[y][x] === 1) {
                 const targetCol = column + x;
                 const targetRow = row + y;
-                rivalBoard[targetCol][targetRow] = 1
+                rivalBoard[targetRow][targetCol] = 3
             }
         }
     }
@@ -491,7 +488,7 @@ function rivalFossilFitsOnBoard(fossil, column, row) {
             if (fossil.shape[y][x] === 1) {
                 const targetCol = column + x;
                 const targetRow = row + y;
-                if (targetCol > 9 || targetRow > 9 || targetCol < 0 || targetRow < 0 || rivalBoard[targetCol][targetRow] !== null || !rivalBoard[targetCol]) {
+                if (targetCol > 9 || targetRow > 9 || targetCol < 0 || targetRow < 0 || rivalBoard[targetRow][targetCol] !== null || !rivalBoard[targetRow]) {
                     return false;
                 }
             }
@@ -500,64 +497,100 @@ function rivalFossilFitsOnBoard(fossil, column, row) {
     return true;
 }
 
+function renderHandleClick(){
+    if (turn===-1){
+    myBoardCells.addEventListener("click", renderRivalDig)}
+    
+    else if (turn===1){
+    rivalBoardCells.forEach((cell)=>{
+        cell.addEventListener("click", handleClick)})
+    }
+    }
 
 function handleClick(event){
     if (turn!=1) return; 
+    
 
-    const cellElement=event.Target
-    const match = cellElement.id.match(/^c(\d+)r(\d+)$/);
+    const cellElement=event.target
+    const match = cellElement.id.match(/^cc(\d+)r(\d+)$/);
+    if (!match) return;
     const colIdx = parseInt(match[1]);
     const rowIdx = parseInt(match[2]);
-
-    const cell= rivalBoard[c][r]
+if (!rivalBoard[rowIdx]||rivalBoard[rowIdx][colIdx]===undefined) return;
+    const cell= rivalBoard[rowIdx][colIdx]
     if (cell===-1) return;
-    else if (cell===1){
-        rivalBoard[c][r]=-1;
+    else if (cell===3){
+        rivalBoard[rowIdx][colIdx]=-1;
         cellElement.appendChild(imgCrack.cloneNode());
     }
     else {
-        if (cell===null){turn*=-1}
-        rivalBoard[c][r]=-1;
+        rivalBoard[rowIdx][colIdx]=-1;
         cellElement.style.backgroundColor=DUGCOLOURS[cell];
+        if (cell===null){turn*=-1}
+        // if (cell===2){}
+        
     }
     winner = getWinner();
     render()
 }
 
-function renderMyDig() {
-        // click on rival board and change colour accordingly
+// function renderMyDig() {
+//         // click on rival board and change colour accordingly
         
-        if (turn!=1) return;
+//         if (turn!=1) return;
 
 
-        rivalBoard.forEach((colArray,colIndex) => {
-            colArray.forEach((cell, rowIndex)=>{
-                const cellIndex=`cc${colIndex}r${rowIndex}`;
-                const cellElement=document.getElementById(cellIndex);
+//         rivalBoard.forEach((colArray,colIndex) => {
+//             colArray.forEach((cell, rowIndex)=>{
+//                 const cellIndex=`cc${colIndex}r${rowIndex}`;
+//                 const cellElement=document.getElementById(cellIndex);
 
-                if (cell ===null||cell===2) {
-                    cellElement.style.backgroundColor = DUGCOLOURS[(cell)];
-                }
-                else if(cell===1){cellElement.appendChild(DUGCOLOURS[cell].cloneNode())
-                }
-                rivalBoard[colIndex][rowIndex] = -1;
+//                 if (cell ===null||cell===2) {
+//                     cellElement.style.backgroundColor = DUGCOLOURS[(cell)];
+//                 }
+//                 else if(cell===1){cellElement.appendChild(DUGCOLOURS[cell].cloneNode())
+//                 }
+//                 rivalBoard[colIndex][rowIndex] = -1;
                 
 
-            })
-        })
+//             })
+//         })
     
     
-    winner = getWinner();
-    turn *= -1;
-    render()
-}
+//     winner = getWinner();
+//     turn *= -1;
+//     render()
+// }
 
 function renderRivalDig(){
 if (turn != -1) return;
+// find and hit first null with successful hit adjacent. 
+// If not possible, else{}.
+// if(){
+
+// } 
+// else {
         // rival guessing code (random, then closer)
-    
+        const[newCol, newRow] = generateRandomXY();
+        const cell=myBoard[newCol][newRow];
+        const cellElement=document.getElementById(`c${newCol}r${newRow}`);
+
+        if (cell===-1) return;
+
+        
+        else if (cell===1){
+        myBoard[newCol][newRow]=-1;
+        cellElement.appendChild(imgCrack.cloneNode());
+    }
+    else {
+        myBoard[newCol][newRow]=-1;
+        cellElement.style.backgroundColor=DUGCOLOURS[cell];
+        if (cell===null){turn*=-1}
+        // if (cell===2){}
+        
+    }  
+ 
     winner = getWinner();
-    turn *= -1;
     render()
 }
 

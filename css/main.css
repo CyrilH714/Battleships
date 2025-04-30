@@ -277,9 +277,11 @@ section[id*="-fossils"]{
     border: 0.1vmin solid grey;
     z-index: 1;
     position: relative;
+    pointer-events: none;
   }
   .crack{
     z-index: 2;
+    pointer-events: none;
   }
   .vertical-marker:has(.cell:hover){
     transform: scale(0.9);
