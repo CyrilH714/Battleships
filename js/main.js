@@ -100,7 +100,14 @@ imgSandTransparent.src = "images/sand.png";
 imgSandTransparent.setAttribute("class", "sand");
 imgSandTransparent.style.opacity = "0.6";
 
-
+const CELLSTATUS={
+    Empty:null,
+    My_fossil:1,
+    My_boobytrap:2,
+    Rival_fossil:3,
+    Rival_boobytrap:4,
+    Dug:-1
+}
 
 const imgCrack = document.createElement("img");
 imgCrack.src = "images/crack.png";
@@ -115,11 +122,11 @@ const DIGCOLOURS = {
 };
 
 const DUGCOLOURS = {
-    "1": imgCrack,
-    "null": "brown",
-    "0": "brown",
-    "2": "red",
-    "3":"none",
+    [CELLSTATUS.My_fossil]: imgCrack,
+    [CELLSTATUS.Rival_fossil]: imgCrack,
+    [CELLSTATUS.My_boobytrap]: "red",
+    [CELLSTATUS.Rival_boobytrap]: "red",
+    [CELLSTATUS.Empty]:"brown",
 }
 
 // const FOSSILCOLOURS={
@@ -406,8 +413,8 @@ myCells.forEach(cell => {
                             };
                             fossilEl.style.display = "none";
 
-                            myBoard[targetCol][targetRow] = 1;
-                            if (fossilEl.id === "my-fossil-boobytrap") { myBoard[targetCol][targetRow] = 2 };
+                            myBoard[targetCol][targetRow] = CELLSTATUS.My_fossil;
+                            if (fossilEl.id === "my-fossil-boobytrap") { myBoard[targetCol][targetRow] = CELLSTATUS.My_boobytrap};
                             targetCell.style.backgroundColor = DIGCOLOURS[myBoard[targetCol][targetRow]] || "yellow";
 
                         }
@@ -475,7 +482,7 @@ function placeOnRivalBoard(fossil, column, row) {
             if (fossil.shape[y][x] === 1) {
                 const targetCol = column + x;
                 const targetRow = row + y;
-                rivalBoard[targetRow][targetCol] = 3
+                rivalBoard[targetRow][targetCol] = CELLSTATUS.Rival_fossil;
             }
         }
     }
@@ -512,56 +519,34 @@ function handleClick(event){
     if (turn!=1) return; 
     
 
-    const cellElement=event.target
+    const cellElement=event.target.closest(".cell");
+    if (!cellElement) return;
+
     const match = cellElement.id.match(/^cc(\d+)r(\d+)$/);
     if (!match) return;
     const colIdx = parseInt(match[1]);
     const rowIdx = parseInt(match[2]);
-if (!rivalBoard[rowIdx]||rivalBoard[rowIdx][colIdx]===undefined) return;
-    const cell= rivalBoard[rowIdx][colIdx]
-    if (cell===-1) return;
-    else if (cell===3){
-        rivalBoard[rowIdx][colIdx]=-1;
+    const cell= rivalBoard[rowIdx][colIdx];
+    if (cell===CELLSTATUS.Dug) return;
+    else if (cell===CELLSTATUS.Rival_fossil|cell===CELLSTATUS.Rival_boobytrap){
+        rivalBoard[rowIdx][colIdx]=CELLSTATUS.Dug;
         cellElement.appendChild(imgCrack.cloneNode());
+        const isThereASandImage = cellElement.querySelector('img.sand');
+if (isThereASandImage) {
+    cellElement.removeChild(isThereASandImage);
+}
+       
     }
     else {
-        rivalBoard[rowIdx][colIdx]=-1;
+        rivalBoard[rowIdx][colIdx]=CELLSTATUS.Dug;
         cellElement.style.backgroundColor=DUGCOLOURS[cell];
-        if (cell===null){turn*=-1}
-        // if (cell===2){}
+        if (cell===CELLSTATUS.Empty){turn*=-1}
+    
         
     }
     winner = getWinner();
     render()
 }
-
-// function renderMyDig() {
-//         // click on rival board and change colour accordingly
-        
-//         if (turn!=1) return;
-
-
-//         rivalBoard.forEach((colArray,colIndex) => {
-//             colArray.forEach((cell, rowIndex)=>{
-//                 const cellIndex=`cc${colIndex}r${rowIndex}`;
-//                 const cellElement=document.getElementById(cellIndex);
-
-//                 if (cell ===null||cell===2) {
-//                     cellElement.style.backgroundColor = DUGCOLOURS[(cell)];
-//                 }
-//                 else if(cell===1){cellElement.appendChild(DUGCOLOURS[cell].cloneNode())
-//                 }
-//                 rivalBoard[colIndex][rowIndex] = -1;
-                
-
-//             })
-//         })
-    
-    
-//     winner = getWinner();
-//     turn *= -1;
-//     render()
-// }
 
 function renderRivalDig(){
 if (turn != -1) return;
@@ -576,17 +561,17 @@ if (turn != -1) return;
         const cell=myBoard[newCol][newRow];
         const cellElement=document.getElementById(`c${newCol}r${newRow}`);
 
-        if (cell===-1) return;
+        if (cell===CELLSTATUS.Dug) return;
 
         
-        else if (cell===1){
+        else if (cell===CELLSTATUS.My_fossil){
         myBoard[newCol][newRow]=-1;
         cellElement.appendChild(imgCrack.cloneNode());
     }
     else {
         myBoard[newCol][newRow]=-1;
         cellElement.style.backgroundColor=DUGCOLOURS[cell];
-        if (cell===null){turn*=-1}
+        if (cell===CELLSTATUS.Empty){turn*=-1}
         // if (cell===2){}
         
     }  
@@ -602,12 +587,12 @@ function getWinner() {
     
     const rivalFossilRemains= rivalBoard.some((array) => {
        return array.some((cell) => {
-             return cell=== 3
+             return cell=== CELLSTATUS.Rival_fossil;
         })
     })
     const myFossilRemains=myBoard.some((array) => {
         return array.some((cell) => {
-            return cell===1;
+            return cell===CELLSTATUS.My_fossil;
         })
     })
 

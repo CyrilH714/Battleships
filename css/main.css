@@ -282,6 +282,12 @@ section[id*="-fossils"]{
   .crack{
     z-index: 2;
     pointer-events: none;
+    object-fit:contain;
+    width:6vmin;
+    height: 6vmin;
+    border-radius: 10%;
+    border: 0.1vmin solid grey;
+    position:relative;
   }
   .vertical-marker:has(.cell:hover){
     transform: scale(0.9);
