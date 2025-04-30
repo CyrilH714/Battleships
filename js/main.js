@@ -89,24 +89,28 @@ const rivalFossils = [
 ]
 
 // Use image for one "colour": need to create element and append later.
-const imgSand = document.createElement("img");
-imgSand.src = "images/sand.png";
-imgSand.setAttribute("id", "sand");
+// const imgSand = document.createElement("img");
+// imgSand.src = "images/sand.png";
+// imgSand.setAttribute("class", "sand");
 // imgSand.style.zIndex=1;
 // imgSand.style.position="relative"
 
 imgSandTransparent = document.createElement("img");
 imgSandTransparent.src = "images/sand.png";
-imgSandTransparent.setAttribute("id", "sand");
+imgSandTransparent.setAttribute("class", "sand");
 imgSandTransparent.style.opacity = "0.6";
+
+
 
 const imgCrack = document.createElement("img");
 imgCrack.src = "images/crack.png";
+imgCrack.setAttribute("class","crack");
 
 
 const DIGCOLOURS = {
     "1": "#E3DAC9",
-    "2": "black"
+    "2": "black",
+    "null":imgSandTransparent,
 };
 
 const DUGCOLOURS = {
@@ -143,6 +147,7 @@ const RESULT = {
     "-1": "You lost!",
 }
 
+
 /*----- state variables -----*/
 // My Board. Array of arrays. Nested arrays represent columns
 // 1 for player in position, -1 for dug position, null for empty
@@ -171,9 +176,22 @@ const instructMeEl = document.querySelector("#my-message");
 const instructRivalEl = document.querySelector("#rival-message")
 const fossilImages = document.querySelectorAll("#my-fossil-images")
 const playAgainBtn = document.getElementById("play-again");
-
+const myBoardCells =document.querySelectorAll("#my-board-wrap .cell");
+const rivalBoardCells= document.querySelectorAll("#rival-board-wrap .cell");
 /*----- event listeners -----*/
 playAgainBtn.addEventListener("click", init);
+
+if (turn===1){
+myBoardCells.addEventListener("click", renderRivalDig)}
+
+else if (turn===-1){
+rivalBoardCells.forEach((cell)=>{
+    cell.addEventListener("click", handleClick)})
+}
+// else {
+//     myBoardCells.removeEventListener("click", renderRivalDig);
+//     rivalBoardCells.removeEventListener("click", renderMyDig); 
+
 
 
 
@@ -451,7 +469,7 @@ function placeRivalFossils() {
         }
     })
     turn = 1;
-    renderDigBoards()
+    renderMyDig()
 }
 
 function placeOnRivalBoard(fossil, column, row) {
@@ -483,38 +501,61 @@ function rivalFossilFitsOnBoard(fossil, column, row) {
 }
 
 
+function handleClick(event){
+    if (turn!=1) return; 
 
+    const cellElement=event.Target
+    const match = cellElement.id.match(/^c(\d+)r(\d+)$/);
+    const colIdx = parseInt(match[1]);
+    const rowIdx = parseInt(match[2]);
+
+    const cell= rivalBoard[c][r]
+    if (cell===-1) return;
+    else if (cell===1){
+        rivalBoard[c][r]=-1;
+        cellElement.appendChild(imgCrack.cloneNode());
+    }
+    else {
+        if (cell===null){turn*=-1}
+        rivalBoard[c][r]=-1;
+        cellElement.style.backgroundColor=DUGCOLOURS[cell];
+    }
+    winner = getWinner();
+    render()
+}
 
 function renderMyDig() {
-    // if clicked board cell=1, crack. if null, brown. Don't allow
-    // if already -1. cell=-1.
+        // click on rival board and change colour accordingly
+        
+        if (turn!=1) return;
 
-    if (turn === 1) {
-        // click on rival board.
-        // if clicked here?
-        myBoard.forEach((array) => {
-            array.forEach((cell){
-                // if clicked here? 
-                if (cell != -1) {
-                    cell.style.backgroundColor = DUGCOLOURS[myBoard[array][cell]]
+
+        rivalBoard.forEach((colArray,colIndex) => {
+            colArray.forEach((cell, rowIndex)=>{
+                const cellIndex=`cc${colIndex}r${rowIndex}`;
+                const cellElement=document.getElementById(cellIndex);
+
+                if (cell ===null||cell===2) {
+                    cellElement.style.backgroundColor = DUGCOLOURS[(cell)];
                 }
-                cell = -1;
+                else if(cell===1){cellElement.appendChild(DUGCOLOURS[cell].cloneNode())
+                }
+                rivalBoard[colIndex][rowIndex] = -1;
+                
 
             })
         })
-    }
-    else if (turn === -1) {
-        // rival guessing code (random, then closer)
-    }
+    
+    
     winner = getWinner();
     turn *= -1;
     render()
 }
 
 function renderRivalDig(){
-if (turn === -1) {
+if (turn != -1) return;
         // rival guessing code (random, then closer)
-    }
+    
     winner = getWinner();
     turn *= -1;
     render()

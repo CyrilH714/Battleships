@@ -269,7 +269,7 @@ section[id*="-fossils"]{
    
   }
 
-  #sand {
+  .sand {
     object-fit:contain;
     width:6vmin;
     height: 6vmin;
@@ -278,7 +278,9 @@ section[id*="-fossils"]{
     z-index: 1;
     position: relative;
   }
-  
+  .crack{
+    z-index: 2;
+  }
   .vertical-marker:has(.cell:hover){
     transform: scale(0.9);
     transition: transform 150ms ease-out;
