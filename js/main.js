@@ -295,7 +295,7 @@ function renderRivalBoard() {
 
 function renderMessageTurn() {
     if (winner != null) {
-        msgEl.textContent = RESULT[turn];
+        msgEl.textContent = RESULT[winner];
     }
     else {
         msgEl.textContent = NAME[turn]
@@ -499,7 +499,8 @@ function rivalFossilFitsOnBoard(fossil, column, row) {
 
 function renderHandleClick(){
     if (turn===-1){
-    myBoardCells.addEventListener("click", renderRivalDig)}
+    myBoardCells.forEach((cell)=>{
+        cell.addEventListener("click", renderRivalDig)})}
     
     else if (turn===1){
     rivalBoardCells.forEach((cell)=>{
@@ -598,32 +599,32 @@ function getWinner() {
     // find 1 in myBoard or rivalBoard.
     // If not found, player wins/loses. getWinner becomes 1 or -1.
     // If 1 found in both boards, continues.
-    let rivalFossilRemains;
-    let myFossilRemains;
-    rivalFossilRemains= rivalBoard.some((array) => {
-        array.some((cell) => {
-             cell=== 1;
+    
+    const rivalFossilRemains= rivalBoard.some((array) => {
+       return array.some((cell) => {
+             return cell=== 3
         })
     })
-    myFossilRemains=myBoard.some((array) => {
-        array.some((cell) => {
-            cell===1;
+    const myFossilRemains=myBoard.some((array) => {
+        return array.some((cell) => {
+            return cell===1;
         })
     })
 
 
     if (!rivalFossilRemains) { return 1 }
-    else if (!myFossilRemains) { return -1 }
+    if (!myFossilRemains) { return -1 }
     else return null;
 }
 
 
 // TODO;
-// my click: if cell is 1, make -1 (crack). if null, make brown.
+
 // make a fossil value where transparency increases
 //  after placeRivalFossils
-// correct hit means turn doesn't change;
+// if complete fossil hit, turn icon red
 // make rival guess randomly, but if hit then search neighbours
+// make button reset game 
 // make boobytrap affect rival space
 // Write out README;
 
