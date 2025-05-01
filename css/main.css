@@ -118,6 +118,7 @@ justify-content:center;
 align-items: center;
 padding-right: 4vmin;
 position:relative;
+margin-top:0;
 }
 
 #rival-board-wrap {
@@ -130,6 +131,7 @@ justify-content:center;
 align-items: center;
 padding-left: 4vmin;
 padding-right:0.5vmin;
+margin-top: 0;
 }
 .cell {
     border-radius: 10%;

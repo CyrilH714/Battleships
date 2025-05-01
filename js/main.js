@@ -639,7 +639,7 @@ function getWinner() {
 
 // if complete fossil hit, turn icon red
 // make rival guess randomly, but if hit then search neighbours
-// make button reset game properly 
+
 // make boobytrap affect rival space
 // Prevent overlapping placement of fossils
 // Write out README;
