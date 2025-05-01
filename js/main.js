@@ -241,8 +241,9 @@ function render() {
     renderMessageInstruct();
     renderControls();
     renderHandleClick();
-    renderRivalDig();
-    // renderMyDig();
+    if (turn===-1 && winner===null){
+        renderRivalDig();
+    }
 
 }
 
@@ -482,7 +483,7 @@ function placeOnRivalBoard(fossil, column, row) {
             if (fossil.shape[y][x] === 1) {
                 const targetCol = column + x;
                 const targetRow = row + y;
-                rivalBoard[targetRow][targetCol] = CELLSTATUS.Rival_fossil;
+                rivalBoard[targetCol][targetRow] = CELLSTATUS.Rival_fossil;
             }
         }
     }
@@ -495,7 +496,7 @@ function rivalFossilFitsOnBoard(fossil, column, row) {
             if (fossil.shape[y][x] === 1) {
                 const targetCol = column + x;
                 const targetRow = row + y;
-                if (targetCol > 9 || targetRow > 9 || targetCol < 0 || targetRow < 0 || rivalBoard[targetRow][targetCol] !== null || !rivalBoard[targetRow]) {
+                if (targetCol > 9 || targetRow > 9 || targetCol < 0 || targetRow < 0 || rivalBoard[targetCol][targetRow] !== null || !rivalBoard[targetCol]) {
                     return false;
                 }
             }
@@ -505,11 +506,10 @@ function rivalFossilFitsOnBoard(fossil, column, row) {
 }
 
 function renderHandleClick(){
-    if (turn===-1){
-    myBoardCells.forEach((cell)=>{
-        cell.addEventListener("click", renderRivalDig)})}
-    
-    else if (turn===1){
+    rivalBoardCells.forEach((cell)=>{
+        cell.removeEventListener("click",handleClick);
+    })
+    if (turn===1){
     rivalBoardCells.forEach((cell)=>{
         cell.addEventListener("click", handleClick)})
     }
@@ -526,10 +526,10 @@ function handleClick(event){
     if (!match) return;
     const colIdx = parseInt(match[1]);
     const rowIdx = parseInt(match[2]);
-    const cell= rivalBoard[rowIdx][colIdx];
+    const cell= rivalBoard[colIdx][rowIdx];
     if (cell===CELLSTATUS.Dug) return;
-    else if (cell===CELLSTATUS.Rival_fossil|cell===CELLSTATUS.Rival_boobytrap){
-        rivalBoard[rowIdx][colIdx]=CELLSTATUS.Dug;
+    else if (cell===CELLSTATUS.Rival_fossil||cell===CELLSTATUS.Rival_boobytrap){
+        rivalBoard[colIdx][rowIdx]=CELLSTATUS.Dug;
         cellElement.appendChild(imgCrack.cloneNode());
         const isThereASandImage = cellElement.querySelector('img.sand');
 if (isThereASandImage) {
@@ -538,13 +538,17 @@ if (isThereASandImage) {
        
     }
     else {
-        rivalBoard[rowIdx][colIdx]=CELLSTATUS.Dug;
+        rivalBoard[colIdx][rowIdx]=CELLSTATUS.Dug;
         cellElement.style.backgroundColor=DUGCOLOURS[cell];
         if (cell===CELLSTATUS.Empty){turn*=-1}
     
         
     }
+    console.log(cell);
     winner = getWinner();
+    if (winner===null&&turn===-1){
+        renderRivalDig();
+    }
     render()
 }
 
@@ -561,18 +565,22 @@ if (turn != -1) return;
         const cell=myBoard[newCol][newRow];
         const cellElement=document.getElementById(`c${newCol}r${newRow}`);
 
-        if (cell===CELLSTATUS.Dug) return;
-
+        if (cell===CELLSTATUS.Dug) {
+            renderRivalDig()
+         return;
+        }
         
         else if (cell===CELLSTATUS.My_fossil){
-        myBoard[newCol][newRow]=-1;
+        myBoard[newCol][newRow]=CELLSTATUS.Dug;
         cellElement.appendChild(imgCrack.cloneNode());
+        renderRivalDig();
+        return;
     }
     else {
         myBoard[newCol][newRow]=-1;
         cellElement.style.backgroundColor=DUGCOLOURS[cell];
         if (cell===CELLSTATUS.Empty){turn*=-1}
-        // if (cell===2){}
+
         
     }  
  
@@ -605,16 +613,17 @@ function getWinner() {
 
 // TODO;
 
-// make a fossil value where transparency increases
-//  after placeRivalFossils
 // if complete fossil hit, turn icon red
 // make rival guess randomly, but if hit then search neighbours
-// make button reset game 
+// make button reset game properly 
 // make boobytrap affect rival space
+// Prevent overlapping placement of fossils
 // Write out README;
 
 // Bonus:
 // Animation for digging- sound effect, mouse to shovel?
+// make a fossil value where transparency increases
+//  after placeRivalFossils
 // Allow rotation of fossils
 // Prevent overlapping placement of fossils
 // gap reduction between h4 and grid
