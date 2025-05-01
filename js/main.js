@@ -61,7 +61,11 @@ class RivalFossilClass {
     get height() {
         return this.shape.length;
     }
-}
+    returnRivalFossil() {
+        this.coordinates = null;
+        this.buried = false;
+        this.rotation = "horizontal";
+}}
 
 
 
@@ -226,10 +230,30 @@ function init() {
         [null, null, null, null, null, null, null, null, null, null],
         [null, null, null, null, null, null, null, null, null, null],
         [null, null, null, null, null, null, null, null, null, null],
-    ]
+    ];
+draggedFossil=null;
+fossilState=null;
+fossils.forEach((fossil)=>{
+    fossil.returnFossil();
+    fossil.getElement().style.display="block";
+})
+rivalFossils.forEach((fossil)=>{
+    fossil.returnRivalFossil()
+})
 
+msgEl.textContent="";
+instructMeEl.textConent="";
+instructRivalEl.textContent="";
 
-
+document.querySelectorAll(".cell").forEach(cell=>{
+    cell.querySelectorAll("img").forEach((img)=>{
+        img.remove()
+    })
+    cell.style.backgroundColor="";
+    // cell.removeAttribute();
+    cell.classList.remove("tempHighlight");
+    cell.appendChild(imgSandTransparent.cloneNode());
+})
     render();
 
 }
