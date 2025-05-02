@@ -108,7 +108,10 @@ const fossils = [
   new MyFossilClass(
     "my-fossil-egg",
     "My dino egg",
-    [[1,0], [1,0]],
+    [
+      [1, 0],
+      [1, 0],
+    ],
     "images/dino-egg.png"
   ),
   new MyFossilClass(
@@ -159,7 +162,10 @@ const rivalFossils = [
   new RivalFossilClass(
     "rival-fossil-egg",
     "Rival dino egg",
-    [[1,0],[1,0]],
+    [
+      [1, 0],
+      [1, 0],
+    ],
     "images/dino-egg.png"
   ),
   new RivalFossilClass(
@@ -259,7 +265,7 @@ let fossilState;
 let draggedFossil = null;
 
 // For rival search for adjacent cells after a successful hit:
-let rivalSuccessfulHits=[];
+let rivalSuccessfulHits = [];
 
 /*----- cached elements  -----*/
 const msgEl = document.querySelector("h1");
@@ -272,9 +278,6 @@ const rivalBoardCells = document.querySelectorAll("#rival-board-wrap .cell");
 /*----- event listeners -----*/
 playAgainBtn.addEventListener("click", init);
 
-// else {
-//     myBoardCells.removeEventListener("click", renderRivalDig);
-//     rivalBoardCells.removeEventListener("click", renderMyDig);
 
 /*----- functions -----*/
 init();
@@ -306,6 +309,7 @@ function init() {
     [null, null, null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null, null, null],
   ];
+  rivalSuccessfulHits = [];
   draggedFossil = null;
   fossilState = null;
   fossils.forEach((fossil) => {
@@ -330,7 +334,6 @@ function init() {
     cell.appendChild(imgSandTransparent.cloneNode());
   });
 
- 
   render();
 }
 
@@ -475,17 +478,18 @@ myCells.forEach((cell) => {
             // const targetCell = document.getElementById(
             //   `c${colIdx + x}r${rowIdx + y}`
             // );
-            const targetCol=colIdx+x;
-            const targetRow=rowIdx+y
+            const targetCol = colIdx + x;
+            const targetRow = rowIdx + y;
             // if (!targetCell) {
-            if(
-                (targetCol<0||targetCol>9||targetRow<0||targetRow>9||myBoard[targetCol][targetRow]!=CELLSTATUS.Empty)){
-
-            
-            
+            if (
+              targetCol < 0 ||
+              targetCol > 9 ||
+              targetRow < 0 ||
+              targetRow > 9 ||
+              myBoard[targetCol][targetRow] != CELLSTATUS.Empty
+            ) {
               canPlace = false;
               break;
-                
             }
           }
         }
@@ -508,10 +512,10 @@ myCells.forEach((cell) => {
                 targetCell.removeChild(sandImage);
               }
               fossilEl.style.display = "none";
-if (myBoard[targetCol][targetRow]!=CELLSTATUS.Empty){
-    canPlace=false;
-    return;
-}
+              if (myBoard[targetCol][targetRow] != CELLSTATUS.Empty) {
+                canPlace = false;
+                return;
+              }
               myBoard[targetCol][targetRow] = CELLSTATUS.My_fossil;
               if (fossilEl.id === "my-fossil-boobytrap") {
                 myBoard[targetCol][targetRow] = CELLSTATUS.My_boobytrap;
@@ -654,56 +658,76 @@ function handleClick(event) {
 
 function renderRivalDig() {
   if (turn != -1) return;
-  // find and hit first null with successful hit adjacent.
-  // If not possible, else{}.
-  let nextDirection= null;
-  let nextCheck= null;
-  if (rivalSuccessfulHits.length>0){
-    const [hitCol, hitRow]=rivalSuccessfulHits[rivalSuccessfulHits.length-1];
-    const directions= [checkAbove, checkBelow, checkLeft, checkRight];
-    for (const checkFunction of directions){
-        nextCheck=checkFunction(hitCol, hitRow);
-        if (nextCheck) break;
-    }
-    }
-  
-  // rival guessing code (random, then closer)
-  let newCol;
-  let newRow;
-  if (nextCheck){
-    newCol=nextCheck.col;
-    newRow=nextCheck.row;
-  }
-  else{
-    [newCol, newRow]=generateRandomXY()
-  }
-  if (newCol<0||newCol>9||newRow<0||newRow>9){
-    renderRivalDig();
-    return;
-  }
-  const cell = myBoard[newCol][newRow];
+
+const newGuess= findNextDoorHit()||generateRandomXY()
+const [newCol, newRow]= newGuess
+const cell = myBoard[newCol][newRow];
   const cellElement = document.getElementById(`c${newCol}r${newRow}`);
 
-  if (cell === CELLSTATUS.Dug) {
+  if (cell === CELLSTATUS.Dug){
     renderRivalDig();
     return;
-  } else if (cell === CELLSTATUS.My_fossil) {
+  }
+  else if (cell === CELLSTATUS.My_fossil) {
     myBoard[newCol][newRow] = CELLSTATUS.Dug;
     cellElement.appendChild(imgCrack.cloneNode());
-    rivalSuccessfulHits.push([newCol, newRow]);
-    renderRivalDig();
-    return;
+    const tried=rivalSuccessfulHits.find((hit)=>
+    hit.column===newCol &&hit.row===newRow);
+    if (!tried){
+    rivalSuccessfulHits.push({
+        column:newCol, row:newRow, tried:{above:false,below:false,left:false,right:false}
+   });
+}
+   renderRivalDig();
+   return;
+   
   } else {
-    myBoard[newCol][newRow] = CELLSTATUS.Dug;
-    cellElement.style.backgroundColor = DUGCOLOURS[cell];
-      turn *= -1;
-
-  }
-
+    myBoard[newCol][newRow]=CELLSTATUS.Dug;
+    cellElement.style.backgroundColor=DUGCOLOURS[cell];
+    turn=1;
+  
   winner = getWinner();
   render();
+  }
 }
 
+function rivalDigDecision(){
+        const nextHit=findNextDoorHit();
+        if(nextHit) return [nextHit.column, nextHit.row];
+
+    else return generateRandomXY();
+}
+
+function findNextDoorHit(){
+    for( let i=0;i<rivalSuccessfulHits.length;i++){
+const currentCell= rivalSuccessfulHits[i];
+    const {column,row,tried}= currentCell;
+
+    const neighbouringCells=[
+        {direction:"above", col:column, row:row-1},
+        {direction:"right", col:column+1, row:row},
+        {direction:"below", col:column, row:row+1},
+        {direction:"left", col:column-1, row:row}
+    ];
+    for (const neighbour of neighbouringCells){
+        if (!tried[neighbour.direction]){
+            tried[neighbour.direction]=true;
+        if (neighbour.col>=0 && neighbour.col<=9 && neighbour.row>=0 && neighbour.row<=9){
+            const cell=myBoard[neighbour.col][neighbour.row];
+            if (cell!=CELLSTATUS.Dug){
+                return[neighbour.col,neighbour.row]
+            }
+        }
+    }
+}
+    rivalSuccessfulHits.splice(i,1);
+    i=i-1;
+}
+    return null;
+}
+
+
+  
 function getWinner() {
   // find 1 in myBoard or rivalBoard.
   // If not found, player wins/loses. getWinner becomes 1 or -1.
@@ -728,85 +752,9 @@ function getWinner() {
   } else return null;
 }
 
-function checkAbove(column, row){
-const newRow=row-1;
-if (newRow<0) return null;
-const newCell=myBoard[column][newRow]
-if (newCell===CELLSTATUS.Dug) return null;
-if (newCell===CELLSTATUS.My_fossil){
-    return {column, row: newRow};
-}
-else return null;
-    
-}
-function checkBelow(column, row){
-    const newRow=row+1;
-    if (newRow>9) return null;
-    const newCell=myBoard[column][newRow]
-    if (newCell===CELLSTATUS.Dug) return null;
-    if (newCell===CELLSTATUS.My_fossil){
-        return {column, row: newRow};
-    }
-    else return null;
-        
-    }
-function checkLeft(column, row){
-        const newCol=column-1;
-        if (newCol<0) return null;
-        const newCell=myBoard[newCol][row]
-        if (newCell===CELLSTATUS.Dug) return null;
-        if (newCell===CELLSTATUS.My_fossil){
-            return {column:newCol, row};
-        }
-        else return null;
-            
-        }
-        function checkRight(column, row){
-            const newCol=column+1;
-            if (newCol>9) return null;
-            const newCell=myBoard[newCol][row]
-            if (newCell===CELLSTATUS.Dug) return null;
-            if (newCell===CELLSTATUS.My_fossil){
-                return {column:newCol, row};
-            }
-            else return null;
-                
-            }
-    
-// function checkBelow(column, row){
-//     newRow=row+1;
-//     if (myBoard[column][newRow]===CELLSTATUS.My_fossil){
-//         rivalSuccessfulHits.push({column, newRow});
-//         return {column, newRow, hit: true};
-//     }
-//     else if(myBoard[column][newRow]===CELLSTATUS.My_fossil) { 
-//         return {column, row: newRow, hit: false}}
-//     else return null;
-// };
-// function checkLeft(column, row){
-//     newCol=column-1;
-//     if (myBoard[newCol][row]===CELLSTATUS.My_fossil){
-//         rivalSuccessfulHits.push({newCol, row});
-//         return {newCol, row, hit: true};
-//     }
-//     else if(myBoard[newCol][row]===CELLSTATUS.My_fossil) { 
-//         return {column: newCol, row, hit: false}}
-//     else return null;
-// };
-// function checkRight(column, row){
-//     newCol=column+1;
-//     if (myBoard[newCol][row]===CELLSTATUS.My_fossil){
-//         rivalSuccessfulHits.push({newCol, row});
-//         return {newCol, row, hit: true};
-//     }
-//     else if(myBoard[newCol][row]===CELLSTATUS.My_fossil) { 
-//         return {column:newCol, row, hit: false}}
-//     else return null;
-// };
+
 // TODO;
-// make rival guess randomly, but if hit then search neighbours
 // make boobytrap affect rival space
-// Prevent overlapping placement of fossils
 
 // Bonus:
 // Animation for digging- sound effect, mouse to shovel?
@@ -814,4 +762,5 @@ function checkLeft(column, row){
 //  if complete fossil hit, turn icon red
 //  after placeRivalFossils
 // Allow rotation of fossils
-
+// Make the rival guesses for adjacent squares a random direction
+// instead of always trying in clockwise direction
