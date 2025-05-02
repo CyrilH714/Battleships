@@ -177,18 +177,12 @@ const rivalFossils = [
 ];
 
 // Use image for one "colour": need to create element and append later.
-// const imgSand = document.createElement("img");
-// imgSand.src = "images/sand.png";
-// imgSand.setAttribute("class", "sand");
-// imgSand.style.zIndex=1;
-// imgSand.style.position="relative"
 
 imgSandTransparent = document.createElement("img");
 imgSandTransparent.src = "images/sand.png";
 imgSandTransparent.setAttribute("class", "sand");
-// imgSandTransparent.classList.add("fading-out")
 imgSandTransparent.style.opacity = "0.6";
-// setTimeout(()=>{imgSandTransparent.remove(),600});
+
 
 const CELLSTATUS = {
   Empty: null,
@@ -202,7 +196,7 @@ const CELLSTATUS = {
 const imgCrack = document.createElement("img");
 imgCrack.src = "images/crack.png";
 imgCrack.setAttribute("class", "crack");
-// imgCrack.classList.add("fading-in")
+
 
 const DIGCOLOURS = {
   1: "#E3DAC9",
@@ -216,7 +210,7 @@ const DUGCOLOURS = {
   [CELLSTATUS.Rival_fossil]: imgCrack,
   [CELLSTATUS.My_boobytrap]: "red",
   [CELLSTATUS.Rival_boobytrap]: "red",
-  [CELLSTATUS.Empty]: "brown",
+  [CELLSTATUS.Empty]: "#BE6400",
 };
 
 // const FOSSILCOLOURS={
