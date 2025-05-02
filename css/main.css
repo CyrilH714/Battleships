@@ -1,312 +1,325 @@
 * {
-    box-sizing: border-box;
-  }
+  box-sizing: border-box;
+}
 
-  body {
-height: 100vh;
-margin: 0;
-padding: 0;
-font-family: "Open Sans", sans-serif;
-display:grid;
-grid-template-columns: 10vmin auto auto 10vmin ;
-grid-template-rows: auto auto auto auto auto auto; 
-grid-template-areas:
-"header header header header"
-"h1 h1 h1 h1"
-"h2me h2me h2rival h2rival"
-"h3me h3me h3rival h3rival"
-"myFossils myBoard rivalBoard rivalFossils"
-"button2 button2 button2 button2";
-justify-content:center;
-align-items: center;
-background-color: palegoldenrod;
-  }
+body {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: "Open Sans", sans-serif;
+  display: grid;
+  grid-template-columns: 10vmin auto auto 10vmin;
+  grid-template-rows: auto auto auto auto auto auto;
+  grid-template-areas:
+    "header header header header"
+    "h1 h1 h1 h1"
+    "h2me h2me h2rival h2rival"
+    "h3me h3me h3rival h3rival"
+    "myFossils myBoard rivalBoard rivalFossils"
+    "button2 button2 button2 button2";
+  justify-content: center;
+  align-items: center;
+  background-color: palegoldenrod;
+}
 
+.empty {
+  width: 4vmin;
+  height: 4vmin;
+  /* margin: auto; */
+  /* background-color: blue; */
+}
 
-  .empty {
-    width:4vmin;
-    height: 4vmin;
-    /* margin: auto; */
-    /* background-color: blue; */
-  }
- 
-  .marker {
-    display:flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    font-size:4vmin;
-    font-weight: bold;
-    align-items: center;
-    justify-content: center;
-    transform: scale(0.5);
-        /* background-color: red; */
-       
-  }
-  .horizontal-arrow {
-    border-top: 4vmin solid transparent;
-    border-bottom: 4vmin solid transparent;
-    border-left: 4vmin solid brown;
-    width:0;
-    height:0;
+.marker {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  font-size: 4vmin;
+  font-weight: bold;
+  align-items: center;
+  justify-content: center;
+  transform: scale(0.5);
+  /* background-color: red; */
+}
+.horizontal-arrow {
+  border-top: 4vmin solid transparent;
+  border-bottom: 4vmin solid transparent;
+  border-left: 4vmin solid brown;
+  width: 0;
+  height: 0;
+  transform: scale(0.9);
+}
+
+.letter {
+  width: 4vmin;
+  margin-right: 1vmin;
+  font-family: "Space Mono";
+}
+
+.vertical-marker {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  font-size: 4vmin;
+  font-weight: bold;
+  justify-content: center;
+  align-items: center;
+  transform: scale(0.5);
+  margin-top: -1vmin;
+
+  .vertical-arrow {
+    border-left: 4vmin solid transparent;
+    border-right: 4vmin solid transparent;
+    border-top: 4vmin solid brown;
+    width: 0;
+    height: 0;
     transform: scale(0.9);
   }
+}
 
- .letter {
-    width: 4vmin;
-    margin-right: 1vmin;
-    font-family: "Space Mono";
- }
-
-  .vertical-marker {
-    display:flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    font-size:4vmin;
-    font-weight: bold;
-    justify-content: center;
-    align-items: center;
-transform: scale(0.5);
-margin-top: -1vmin;
-
-    .vertical-arrow {
-            border-left: 4vmin solid transparent;
-            border-right: 4vmin solid transparent;
-            border-top: 4vmin solid brown;
-            width:0;
-            height:0;
-            transform: scale(0.9)
-        }
-        
-  }
-
-  header{
-    font-size:10vmin;
-    color:darkgoldenrod;
-    font-weight: bolder;
-    font-family:"Black Ops One", sans-serif;
-    margin-top: 0;
-    text-shadow: 
-    -2px -2px 0 #333,  
-    2px -2px 0 #333,
-    -2px 2px 0 #333,
+header {
+  font-size: 10vmin;
+  color: darkgoldenrod;
+  font-weight: bolder;
+  font-family: "Black Ops One", sans-serif;
+  margin-top: 0;
+  text-shadow: -2px -2px 0 #333, 2px -2px 0 #333, -2px 2px 0 #333,
     2px 2px 0 #333;
-    grid-area: header;
-    margin: auto;
-  }
+  grid-area: header;
+  margin: auto;
+}
 
-  h1 {
-    font-size: 5vmin;
-    color: antiquewhite;
-    font-weight: bold;
-    text-shadow: 
-    -2px -2px 0 #333,  
-    2px -2px 0 #333,
-    -2px 2px 0 #333,
+h1 {
+  font-size: 5vmin;
+  color: antiquewhite;
+  font-weight: bold;
+  text-shadow: -2px -2px 0 #333, 2px -2px 0 #333, -2px 2px 0 #333,
     2px 2px 0 #333;
-    grid-area: h1;
-    margin: auto;
-  }
-
+  grid-area: h1;
+  margin: auto;
+}
 
 #my-board-wrap {
-    grid-area:myBoard;
-    margin: auto;
-    display: grid;
-    grid-template-columns: 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin;
-grid-template-rows: 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin;
-justify-content:center;
-align-items: center;
-padding-right: 4vmin;
-position:relative;
-margin-top:0;
+  grid-area: myBoard;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin;
+  grid-template-rows: 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin;
+  justify-content: center;
+  align-items: center;
+  padding-right: 4vmin;
+  position: relative;
+  margin-top: 0;
+  cursor: url("shovel3.ico") 25 20, auto;
 }
 
 #rival-board-wrap {
-    grid-area:rivalBoard;
-    margin: auto;
-    display: grid;
-    grid-template-columns: 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin;
-grid-template-rows: 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin;
-justify-content:center;
-align-items: center;
-padding-left: 4vmin;
-padding-right:0.5vmin;
-margin-top: 0;
+  grid-area: rivalBoard;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin;
+  grid-template-rows: 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin 6vmin;
+  justify-content: center;
+  align-items: center;
+  padding-left: 4vmin;
+  padding-right: 0.5vmin;
+  margin-top: 0;
+  cursor: url("shovel3.ico") 25 20, auto;
 }
 .cell {
-    border-radius: 10%;
-    border: 0.1vmin solid grey;
-    width:6vmin;
-    height:6vmin;
-    position: relative;
-    z-index: 1
-
-  }
-
-  h2 {
-    color: goldenrod;
-    text-shadow: 
-    -1px -1px 0 #333,  
-    1px -1px 0 #333,
-    -1px 1px 0 #333,
-    1px 1px 0 #333;
-    
-  }
- #my-message {
-    grid-area:h3me;
-    margin: auto;
-    margin-bottom: 1vmin;
- }
- #rival-message {
-    grid-area:h3rival;
-    margin: auto;
- }
- h4 {
-        color: goldenrod;
-        text-shadow: 
-        -1px -1px 0 #333,  
-        1px -1px 0 #333,
-        -1px 1px 0 #333,
-        1px 1px 0 #333;
-        margin: auto;
-        margin-top: 4vmin;
-        text-align: right;
-  }
-
-  #my-site {
-    grid-area: h2me;
-    margin: auto;
-  }
-
-  #rival-site {
-    grid-area: h2rival;
-    margin: auto;
-  }
-
-  button {
-    margin-top: 4vmin;
-    margin-bottom:1vmin;
-    margin: auto;
-    padding: 2vmin;
-    font-size:2vmin;
-    border-radius: 4vmin;
-    border:0.1vmin solid orange;
-    color: grey;
-    background-color: goldenrod;
-    
-
-  }
- #start {
-    grid-area:button1;
-    margin: auto;
-  }
-  #play-again {
-    grid-area:button2;
-    margin: auto;
-  }
-
-  button:hover {
-
-    color: black;
-    background-color: orange;
-  }
-
-
-section[id*="-fossils"]{
-    display: flex;
-    flex-direction:column;
-    align-items: center;
-    justify-content:flex-start;
-    gap:0vmin;
-    margin-bottom: 55vmin;
-    max-width:8vmin;
-    justify-self:center;
-   
-
+  border-radius: 10%;
+  border: 0.1vmin solid grey;
+  width: 6vmin;
+  height: 6vmin;
+  position: relative;
+  z-index: 1;
 }
-  div[id*="-fossil-images"]{
-    grid-area:myFossils;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap:0vmin;
-    /* flex-direction: column; */
-    margin-left: 0vmin;
-    margin-right:0vmin;
-    justify-content:center;
-    align-items: center;
 
-    /* position:relative; */
-  }
+h2 {
+  color: goldenrod;
+  text-shadow: -1px -1px 0 #333, 1px -1px 0 #333, -1px 1px 0 #333,
+    1px 1px 0 #333;
+}
+#my-message {
+  grid-area: h3me;
+  margin: auto;
+  margin-bottom: 1vmin;
+}
+#rival-message {
+  grid-area: h3rival;
+  margin: auto;
+}
+h4 {
+  color: goldenrod;
+  text-shadow: -1px -1px 0 #333, 1px -1px 0 #333, -1px 1px 0 #333,
+    1px 1px 0 #333;
+  margin: auto;
+  margin-top: 4vmin;
+  text-align: right;
+}
 
-  div[id*='-fossil-']{
+#my-site {
+  grid-area: h2me;
+  margin: auto;
+}
 
-    position:relative;
-    width:10vmin;
-    height: 10vmin;
-    margin:0vmin;
-    flex: 0 auto;
-  }
+#rival-site {
+  grid-area: h2rival;
+  margin: auto;
+}
 
-  .highlight {
+button {
+  margin-top: 4vmin;
+  margin-bottom: 1vmin;
+  margin: auto;
+  padding: 2vmin;
+  font-size: 2vmin;
+  border-radius: 4vmin;
+  border: 0.1vmin solid orange;
+  color: grey;
+  background-color: goldenrod;
+}
+#start {
+  grid-area: button1;
+  margin: auto;
+}
+#play-again {
+  grid-area: button2;
+  margin: auto;
+}
+
+button:hover {
+  color: black;
+  background-color: orange;
+}
+
+section[id*="-fossils"] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0vmin;
+  margin-bottom: 55vmin;
+  max-width: 8vmin;
+  justify-self: center;
+}
+div[id*="-fossil-images"] {
+  grid-area: myFossils;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0vmin;
+  /* flex-direction: column; */
+  margin-left: 0vmin;
+  margin-right: 0vmin;
+  justify-content: center;
+  align-items: center;
+
+  /* position:relative; */
+}
+
+div[id*="-fossil-"] {
+  position: relative;
+  width: 10vmin;
+  height: 10vmin;
+  margin: 0vmin;
+  flex: 0 auto;
+}
+
+/* .highlight {
     transform: scale(1.4);
     transition: transform 150ms ease-out;
-    border-top-color: hex(#5C4033)
+    border-top-color: hex(#5C4033) */
 /* TODO: Use JS to link hovering over board div to highlighted row/column marker */
+/* 
+  } */
+img {
+  height: 10vmin;
+  width: 10vmin;
+  margin-bottom: 0vmin;
+  justify-content: right;
+  display: block;
+  align-items: right;
+  position: absolute;
+  cursor: grab;
+  z-index: 1;
+  /* pointer-events:none; */
 
-  }
-  img {
-    height:10vmin;
-    width: 10vmin;
-    margin-bottom: 0vmin;
-    justify-content: right;
-    display: block;
-    align-items: right;
-    position: absolute;
-    cursor: grab;
-    z-index: 1;
-    /* pointer-events:none; */
+  /* background-color: red; */
+}
 
-    /* background-color: red; */
-   
-  }
+.cell img {
+  transition: opacity 1s ease;
+  opacity: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.fading-in {
+  opacity: 0;
+  animation: fadeIn 0.8s ease-in forwards;
+}
+.fading-in-brown {
+  background-color: brown;
+  transition: background-color 1s ease-in-out;
+}
+.fading-out {
+  opacity: 1;
+  animation: fadeOut 0.6s ease-out forwards;
+}
 
-  .sand {
-    object-fit:contain;
-    width:6vmin;
-    height: 6vmin;
-    border-radius: 10%;
-    border: 0.1vmin solid grey;
-    z-index: 1;
-    position: relative;
-    pointer-events: none;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
-  .crack{
-    z-index: 2;
-    pointer-events: none;
-    object-fit:contain;
-    width:6vmin;
-    height: 6vmin;
-    border-radius: 10%;
-    border: 0.1vmin solid grey;
-    position:relative;
+  to {
+    opacity: 1;
   }
-  .vertical-marker:has(.cell:hover){
-    transform: scale(0.9);
-    transition: transform 150ms ease-out;
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
   }
-  .vertical-arrow:has(.cell:hover){
-    transform: scale(0.9);
-    transition: transform 150ms ease-out;
+  to {
+    opacity: 0;
   }
+}
 
-  .cell.tempHighlight::before {
-    content:"";
-    inset:0;
-    outline:0px dashed orange;
-    background-color: yellow;
-    opacity: 0.3;
-    z-index: 2;
-    position: absolute;
-    pointer-events:none;
-  }
+.sand {
+  object-fit: contain;
+  width: 6vmin;
+  height: 6vmin;
+  border-radius: 10%;
+  border: 0.1vmin solid grey;
+  z-index: 1;
+  position: relative;
+  pointer-events: none;
+}
+.crack {
+  z-index: 2;
+  pointer-events: none;
+  object-fit: contain;
+  width: 6vmin;
+  height: 6vmin;
+  border-radius: 10%;
+  border: 0.1vmin solid grey;
+  position: relative;
+}
+.vertical-marker:has(.cell:hover) {
+  transform: scale(0.9);
+  transition: transform 150ms ease-out;
+}
+.vertical-arrow:has(.cell:hover) {
+  transform: scale(0.9);
+  transition: transform 150ms ease-out;
+}
+
+.cell.tempHighlight::before {
+  content: "";
+  inset: 0;
+  outline: 0px dashed orange;
+  background-color: yellow;
+  opacity: 0.3;
+  z-index: 2;
+  position: absolute;
+  pointer-events: none;
+}

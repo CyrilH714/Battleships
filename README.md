@@ -21,7 +21,8 @@ A rival paleontologist wants to steal your precious fossils! Hide your artefacts
 
    - If the clicked square shows _cracked bone_, __success__! You hit your rival's fossil. Dig again.
 
-   - Be careful not to hit the __cursed fossil!__ This will make you lose your turn and will dig spaces on your own board too.
+   - Be careful not to hit the __cursed fossil!__ This will make you lose your turn and will dig spaces on your own board too. 
+   > Note: For now, __cursed fossil__ will just act as a normal fossil
 
 3. The game ends when all of your fossils, or all of your rival's fossils, have been dug up.
 

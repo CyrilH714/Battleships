@@ -186,20 +186,23 @@ const rivalFossils = [
 imgSandTransparent = document.createElement("img");
 imgSandTransparent.src = "images/sand.png";
 imgSandTransparent.setAttribute("class", "sand");
+// imgSandTransparent.classList.add("fading-out")
 imgSandTransparent.style.opacity = "0.6";
+// setTimeout(()=>{imgSandTransparent.remove(),600});
 
 const CELLSTATUS = {
   Empty: null,
   My_fossil: 1,
-  My_boobytrap: 2,
+  My_boobytrap: 1,
   Rival_fossil: 3,
-  Rival_boobytrap: 4,
+  Rival_boobytrap: 3,
   Dug: -1,
 };
 
 const imgCrack = document.createElement("img");
 imgCrack.src = "images/crack.png";
 imgCrack.setAttribute("class", "crack");
+// imgCrack.classList.add("fading-in")
 
 const DIGCOLOURS = {
   1: "#E3DAC9",
@@ -233,7 +236,7 @@ const NAME = {
 };
 
 const INSTRUCT = {
-  null: "Hide your fossils here!",
+  null: "Drag your fossils onto your site!",
   1: "Choose a spot to dig!",
   "-1": "Your rival is digging!",
 };
@@ -277,7 +280,6 @@ const myBoardCells = document.querySelectorAll("#my-board-wrap .cell");
 const rivalBoardCells = document.querySelectorAll("#rival-board-wrap .cell");
 /*----- event listeners -----*/
 playAgainBtn.addEventListener("click", init);
-
 
 /*----- functions -----*/
 init();
@@ -356,10 +358,10 @@ function renderMyBoard() {
       const cellEl = document.getElementById(`c${colIdx}r${rowIdx}`);
       if (typeof DIGCOLOURS[cellVal] === "object") {
         {
-          const existingImg = cellEl.querySelector("img");
-          if (existingImg) {
-            cellEl.removeChild(existingImg);
-          }
+          cellEl.querySelectorAll("img:not(.crack)").forEach((img) => {
+            img.remove();
+          });
+
           cellEl.appendChild(DIGCOLOURS[cellVal].cloneNode());
         }
       } else {
@@ -375,15 +377,14 @@ function renderRivalBoard() {
       const cellEl = document.getElementById(`cc${colIdx}r${rowIdx}`);
       if (typeof DIGCOLOURS[cellVal] === "object") {
         if (turn === 0) {
-          const existingImg = cellEl.querySelector("img");
-          if (existingImg) {
-            cellEl.removeChild(existingImg);
-          }
+          cellEl.querySelectorAll("img:not(.crack)").forEach((img) => {
+            img.remove();
+          });
         } else {
-          const existingImg = cellEl.querySelector("img");
-          if (existingImg) {
-            cellEl.removeChild(existingImg);
-          }
+          cellEl.querySelectorAll("img:not(.crack)").forEach((img) => {
+            img.remove();
+          });
+
           cellEl.appendChild(DIGCOLOURS[cellVal].cloneNode());
         }
       } else {
@@ -518,7 +519,7 @@ myCells.forEach((cell) => {
               }
               myBoard[targetCol][targetRow] = CELLSTATUS.My_fossil;
               if (fossilEl.id === "my-fossil-boobytrap") {
-                myBoard[targetCol][targetRow] = CELLSTATUS.My_boobytrap;
+                myBoard[targetCol][targetRow] = CELLSTATUS.My_fossil;
               }
               targetCell.style.backgroundColor =
                 DIGCOLOURS[myBoard[targetCol][targetRow]] || "yellow";
@@ -636,14 +637,10 @@ function handleClick(event) {
     cell === CELLSTATUS.Rival_boobytrap
   ) {
     rivalBoard[colIdx][rowIdx] = CELLSTATUS.Dug;
-    cellElement.appendChild(imgCrack.cloneNode());
-    const isThereASandImage = cellElement.querySelector("img.sand");
-    if (isThereASandImage) {
-      cellElement.removeChild(isThereASandImage);
-    }
+    cellFading(cellElement, imgCrack, null);
   } else {
     rivalBoard[colIdx][rowIdx] = CELLSTATUS.Dug;
-    cellElement.style.backgroundColor = DUGCOLOURS[cell];
+    cellFading(cellElement, null, DUGCOLOURS[CELLSTATUS.Empty]);
     if (cell === CELLSTATUS.Empty) {
       turn *= -1;
     }
@@ -659,75 +656,78 @@ function handleClick(event) {
 function renderRivalDig() {
   if (turn != -1) return;
 
-const newGuess= findNextDoorHit()||generateRandomXY()
-const [newCol, newRow]= newGuess
-const cell = myBoard[newCol][newRow];
+  const newGuess = findNextDoorHit() || generateRandomXY();
+  const [newCol, newRow] = newGuess;
+  const cell = myBoard[newCol][newRow];
   const cellElement = document.getElementById(`c${newCol}r${newRow}`);
 
-  if (cell === CELLSTATUS.Dug){
+  if (cell === CELLSTATUS.Dug) {
     renderRivalDig();
     return;
-  }
-  else if (cell === CELLSTATUS.My_fossil) {
+  } else if (cell === CELLSTATUS.My_fossil) {
     myBoard[newCol][newRow] = CELLSTATUS.Dug;
-    cellElement.appendChild(imgCrack.cloneNode());
-    const tried=rivalSuccessfulHits.find((hit)=>
-    hit.column===newCol &&hit.row===newRow);
-    if (!tried){
-    rivalSuccessfulHits.push({
-        column:newCol, row:newRow, tried:{above:false,below:false,left:false,right:false}
-   });
-}
-   renderRivalDig();
-   return;
-   
+    cellFading(cellElement, imgCrack, null);
+    const tried = rivalSuccessfulHits.find(
+      (hit) => hit.column === newCol && hit.row === newRow
+    );
+    if (!tried) {
+      rivalSuccessfulHits.push({
+        column: newCol,
+        row: newRow,
+        tried: { above: false, below: false, left: false, right: false },
+      });
+    }
+    renderRivalDig();
+    return;
   } else {
-    myBoard[newCol][newRow]=CELLSTATUS.Dug;
-    cellElement.style.backgroundColor=DUGCOLOURS[cell];
-    turn=1;
-  
-  winner = getWinner();
-  render();
+    myBoard[newCol][newRow] = CELLSTATUS.Dug;
+    cellFading(cellElement, null, DUGCOLOURS[CELLSTATUS.Empty]);
+    turn = 1;
+
+    winner = getWinner();
+    render();
   }
 }
 
-function rivalDigDecision(){
-        const nextHit=findNextDoorHit();
-        if(nextHit) return [nextHit.column, nextHit.row];
-
-    else return generateRandomXY();
+function rivalDigDecision() {
+  const nextHit = findNextDoorHit();
+  if (nextHit) return [nextHit.column, nextHit.row];
+  else return generateRandomXY();
 }
 
-function findNextDoorHit(){
-    for( let i=0;i<rivalSuccessfulHits.length;i++){
-const currentCell= rivalSuccessfulHits[i];
-    const {column,row,tried}= currentCell;
+function findNextDoorHit() {
+  for (let i = 0; i < rivalSuccessfulHits.length; i++) {
+    const currentCell = rivalSuccessfulHits[i];
+    const { column, row, tried } = currentCell;
 
-    const neighbouringCells=[
-        {direction:"above", col:column, row:row-1},
-        {direction:"right", col:column+1, row:row},
-        {direction:"below", col:column, row:row+1},
-        {direction:"left", col:column-1, row:row}
+    const neighbouringCells = [
+      { direction: "above", col: column, row: row - 1 },
+      { direction: "right", col: column + 1, row: row },
+      { direction: "below", col: column, row: row + 1 },
+      { direction: "left", col: column - 1, row: row },
     ];
-    for (const neighbour of neighbouringCells){
-        if (!tried[neighbour.direction]){
-            tried[neighbour.direction]=true;
-        if (neighbour.col>=0 && neighbour.col<=9 && neighbour.row>=0 && neighbour.row<=9){
-            const cell=myBoard[neighbour.col][neighbour.row];
-            if (cell!=CELLSTATUS.Dug){
-                return[neighbour.col,neighbour.row]
-            }
+    for (const neighbour of neighbouringCells) {
+      if (!tried[neighbour.direction]) {
+        tried[neighbour.direction] = true;
+        if (
+          neighbour.col >= 0 &&
+          neighbour.col <= 9 &&
+          neighbour.row >= 0 &&
+          neighbour.row <= 9
+        ) {
+          const cell = myBoard[neighbour.col][neighbour.row];
+          if (cell != CELLSTATUS.Dug) {
+            return [neighbour.col, neighbour.row];
+          }
         }
+      }
     }
-}
-    rivalSuccessfulHits.splice(i,1);
-    i=i-1;
-}
-    return null;
+    rivalSuccessfulHits.splice(i, 1);
+    i = i - 1;
+  }
+  return null;
 }
 
-
-  
 function getWinner() {
   // find 1 in myBoard or rivalBoard.
   // If not found, player wins/loses. getWinner becomes 1 or -1.
@@ -752,12 +752,39 @@ function getWinner() {
   } else return null;
 }
 
+function cellFading(cellEl, newImage, newColour) {
+  const sand = cellEl.querySelector("img.sand");
+  if (sand) {
+    sand.classList.add("fading-out");
+    setTimeout(() => {
+      if (sand && sand.parentNode) {
+        sand.remove();
+      }
+    }, 800);
+  }
+
+  if (newImage instanceof HTMLImageElement) {
+    const crackImg = newImage.cloneNode();
+    crackImg.classList.add("crack");
+    // crackImg.style.opacity=0;
+    cellEl.appendChild(crackImg);
+    setTimeout(() => {
+      crackImg.classList.add("fading-in");
+    });
+  } else if (typeof newColour === "string") {
+    setTimeout(() => {
+      cellEl.style.backgroundColor = newColour;
+      cellEl.classList.remove("fading-in-brown");
+    });
+  }
+}
 
 // TODO;
-// make boobytrap affect rival space
+// make boobytrap act separately to fossil,
+// affecting rival space
 
 // Bonus:
-// Animation for digging- sound effect, mouse to shovel?
+// sound effect for digging,
 // make a fossil value where transparency increases.
 //  if complete fossil hit, turn icon red
 //  after placeRivalFossils
