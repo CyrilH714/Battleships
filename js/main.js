@@ -345,6 +345,8 @@ function render() {
   }
 }
 
+
+// render pllayer board in current state. Remove old images 9not crack), add new images 
 function renderMyBoard() {
   myBoard.forEach((colArr, colIdx) => {
     colArr.forEach((cellVal, rowIdx) => {
@@ -365,6 +367,7 @@ function renderMyBoard() {
   });
 }
 
+// render rival board current state. Removes old images each time (not crack), add new images
 function renderRivalBoard() {
   rivalBoard.forEach((colArr, colIdx) => {
     colArr.forEach((cellVal, rowIdx) => {
@@ -388,6 +391,8 @@ function renderRivalBoard() {
   });
 }
 
+
+// Display messages about turn and instruct 
 function renderMessageTurn() {
   if (winner != null) {
     msgEl.textContent = RESULT[winner];
@@ -406,6 +411,7 @@ function renderMessageInstruct() {
   }
 }
 
+// Show/hide play again button if game has ended or not
 function renderControls() {
   playAgainBtn.style.visibility = winner ? "visible" : "hidden";
 }
@@ -423,6 +429,9 @@ fossils.forEach((fossil) => {
 });
 
 // Make board cells listen to drag drop of fossil
+// dragover highlights possible drop targets
+// dragleave removes highlight when fossil not over cell
+// drop places the fossil on board
 myCells = document.querySelectorAll("#my-board-wrap > .cell");
 myCells.forEach((cell) => {
   cell.addEventListener("dragover", (event) => {
@@ -470,12 +479,8 @@ myCells.forEach((cell) => {
       for (let y = 0; y < draggedFossil.shape.length; y++) {
         for (let x = 0; x < draggedFossil.shape[0].length; x++) {
           if (draggedFossil.shape[y][x] === 1) {
-            // const targetCell = document.getElementById(
-            //   `c${colIdx + x}r${rowIdx + y}`
-            // );
             const targetCol = colIdx + x;
             const targetRow = rowIdx + y;
-            // if (!targetCell) {
             if (
               targetCol < 0 ||
               targetCol > 9 ||
@@ -533,17 +538,20 @@ myCells.forEach((cell) => {
   });
 });
 
+// After releasing fossil, highlight disappears
 function clearTempHighlight() {
   document.querySelectorAll(".tempHighlight").forEach((cell) => {
     cell.classList.remove("tempHighlight");
   });
 }
 
+
+// Check for if player has placed all fossils
 function areMyFossilsPlaced() {
   return fossils.every((fossil) => fossil.buried);
 }
 
-// Rival randomly places pieces after we've buried all of ours:
+
 // Random coordinate generator for board
 function generateRandomXY() {
   const minValue = 0;
@@ -553,6 +561,8 @@ function generateRandomXY() {
   console.log(randomColumn, randomRow);
   return [randomColumn, randomRow];
 }
+
+// Randomly places rival fossil on board after we've buried ours
 function placeRivalFossils() {
   rivalFossils.forEach((rivalFossil) => {
     let placed = false;
@@ -569,6 +579,7 @@ function placeRivalFossils() {
   turn = 1;
 }
 
+// Fill cell with fossil marker (crack) after drop
 function placeOnRivalBoard(fossil, column, row) {
   for (let y = 0; y < fossil.shape.length; y++) {
     for (let x = 0; x < fossil.shape[0].length; x++) {
@@ -581,6 +592,7 @@ function placeOnRivalBoard(fossil, column, row) {
   }
 }
 
+// Confirms that dropped fossil fits entirely on board before dropping
 function rivalFossilFitsOnBoard(fossil, column, row) {
   for (let y = 0; y < fossil.shape.length; y++) {
     for (let x = 0; x < fossil.shape[0].length; x++) {
@@ -603,6 +615,8 @@ function rivalFossilFitsOnBoard(fossil, column, row) {
   return true;
 }
 
+
+// For digging/clicking on rival board
 function renderHandleClick() {
   rivalBoardCells.forEach((cell) => {
     cell.removeEventListener("click", handleClick);
@@ -614,6 +628,7 @@ function renderHandleClick() {
   }
 }
 
+//Gets clicked cell, updates, ends turn
 function handleClick(event) {
   if (turn != 1) return;
 
@@ -647,6 +662,10 @@ function handleClick(event) {
   render();
 }
 
+
+
+// Rival guess logic + follow up guess for next door cells to fossil.
+// Updates rivalSuccessfulHits array if finds a fossil
 function renderRivalDig() {
   if (turn != -1) return;
 
@@ -683,12 +702,15 @@ function renderRivalDig() {
   }
 }
 
+// rival decision to search around fossil cell or go back to random guess
 function rivalDigDecision() {
   const nextHit = findNextDoorHit();
   if (nextHit) return [nextHit.column, nextHit.row];
   else return generateRandomXY();
 }
 
+
+// After rival guesses crack cell, checks  next door cells
 function findNextDoorHit() {
   for (let i = 0; i < rivalSuccessfulHits.length; i++) {
     const currentCell = rivalSuccessfulHits[i];
@@ -746,6 +768,7 @@ function getWinner() {
   } else return null;
 }
 
+// For sand image fade out and crack image/brown colour fade in
 function cellFading(cellEl, newImage, newColour) {
   const sand = cellEl.querySelector("img.sand");
   if (sand) {
